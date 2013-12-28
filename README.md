@@ -1,12 +1,14 @@
 Blipboard Server README
 =======================
 
+NOTE: these are probably a bit out of date
+
 Requirements
 ------------
 
 Install
 -------
-    git clone --recursive git@github.com:amallavarapu/blipboard.git
+    git clone --recursive git@github.com:jfischl/blipboard-server.git
     cd blipboard
     npm install 
 
