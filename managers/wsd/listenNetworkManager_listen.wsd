@@ -1,0 +1,21 @@
+title User Tunes In (Listens) to a Channel
+channelController->listenNetworkManager:listen
+listenNetworkManager->channels:find
+
+note over listenNetworkManager,channels:   
+     validate channel ids exist 
+end note
+
+opt in parallel 
+    listenNetworkManager->channelListeners:insert
+    listenNetworkManager->channelListensTos:insert
+end
+
+alt if insert is non-duplicate
+    listenNetworkManager->channelController:callback(null,true)
+    listenNetworkManager->channelEvents:addedChannelListener
+else it's a duplicate
+     listenNetworkManager->channelController:callback(null,false)
+else db is inconsistent 
+     listenNetworkManager->channelEvents:listenNetworkInvalid
+end 

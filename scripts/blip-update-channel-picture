@@ -1,0 +1,62 @@
+#!/usr/bin/env node
+var URI = require('URIjs');
+var async = require('async');
+var assert = require('assert');
+var js = require('../lib/javascript');
+var mongo = require('../lib/mongo');
+
+var argv = require('optimist')
+  .usage('Updates facebook pictures to different resolution in db.\nUsage: $0 [--type small|normal|large] [--clear]')
+  .argv;
+
+mongo.initialize(function (error) 
+{
+  if (error) {
+    console.log(js.pp(error));
+    process.exit(-1);
+  }
+  else {
+    mongo.channels.find({facebook: {$exists: true}}).toArray(updatePictures);
+    function updatePictures(error, channels) { 
+      if (error) { 
+        console.log("error: " + error);
+        done();
+      }
+      else if (channels) { 
+        async.eachLimit(channels, 25, update, done);
+      }
+      else {
+        console.log("no channels");
+      }
+    }
+
+    function update(channel, callback) { 
+      var uri = URI(channel.picture);
+      if (argv.clear) { 
+        uri.query("");
+      }
+      else if (argv.type) { 
+        uri.query("type=" + argv.type);
+      }
+      console.log(channel.name + " updating picture: " + uri.toString());
+      async.parallel({
+        channel: function(callback) { 
+          mongo.channels.update({_id: channel._id}, {$set: {picture: uri.toString()}}, callback);
+        },
+        blipsAuthor: function(callback) { 
+          mongo.blips.update({'author._id': channel._id}, {$set: {'author.picture': uri.toString()}}, {multi:true}, callback);
+        },
+        blipsPlace: function(callback) { 
+          mongo.blips.update({'place._id': channel._id}, {$set: {'place.picture': uri.toString()}}, {multi:true}, callback);
+        }
+      }, callback);
+
+    }
+    
+    function done() {
+      console.log("done.");
+      mongo.close();
+      process.exit();
+    }
+  }
+});

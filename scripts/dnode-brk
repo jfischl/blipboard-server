@@ -1,0 +1,11 @@
+function startDebugger() {
+    sleep 1
+    open "http://0.0.0.0:8080/debug?port=5858"
+}
+inspectorRunning="`ps -Al | grep "node-inspector" | grep -v grep`";
+if [ -z "$inspectorRunning" ]; then
+    echo "Starting node-inspector..."
+    node-inspector &
+fi
+startDebugger&
+node --debug-brk "$@"

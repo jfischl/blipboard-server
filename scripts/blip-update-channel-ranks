@@ -1,0 +1,31 @@
+#!/usr/bin/env node
+var async = require('async');
+var assert = require('assert');
+var js = require('../lib/javascript');
+var mongo = require('../lib/mongo');
+var placeManager = require('../managers/placeManager');
+
+mongo.initialize(function (error) 
+{
+  if (error) {
+    console.log(js.pp(error));
+    process.exit(-1);
+  }
+  else {
+    mongo.channels.find({type: 'place', facebook: {$exists: true}}).toArray(updatePlaces);
+    function updatePlaces(error, places) { 
+      async.forEachLimit(places, 10, update, done);
+    }
+
+    function update(place, callback) { 
+      console.log("Updating rank: " + place.name);
+      placeManager.updateChannelRank(place, callback);
+    }
+    
+    function done() {
+      console.log("done.");
+      mongo.close();
+      process.exit();
+    }
+  }
+});

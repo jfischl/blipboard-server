@@ -1,0 +1,25 @@
+<html>
+<head>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable(latencyData);
+
+        var options = {
+          title: 'Latency Performance'
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+      }
+setTimeout(function() {document.location.reload(true);}, 1000);
+</script>
+</head>
+
+<body>
+    <div id="chart_div" style="width: 900px; height: 500px;"></div>
+latencyData
+<!-- hhmts start -->Last modified: Mon Sep 24 17:32:01 PDT 2012 <!-- hhmts end -->
+</body> </html>

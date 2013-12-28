@@ -1,0 +1,90 @@
+#!/usr/bin/env node
+var assert = require('assert');
+var async = require('async');
+var winston = require('winston');
+
+var categories = require('../data/categories');
+var factual = require('../lib/factual');
+var mongo = require('../lib/mongo');
+var js = require('../lib/javascript');
+var placeManager = require('../managers/placeManager');
+var channelManager = require('../managers/channelManager');
+
+var argv = require('optimist')
+  .usage('Adds place channel(s)\nUsage: $0 [--match name]')
+  .alias('match', 'm').describe('string', 'specify a substring to match on. e.g. quince').demand('match')
+  .argv;
+
+async.series({
+  mongo: function(callback) {
+    mongo.initialize(callback);
+  },
+  topics: function(callback) { 
+    categories.loadTopicIds(callback);
+  }, 
+  load: function(callback) { 
+    placeManager.find(argv.match, callback);
+  }
+}, function(error, results) { 
+  if (error) { 
+    console.log("Failed:"+js.pp(error));
+    process.exit(-1);
+  }
+  var criterion = {};
+  if (results.load) 
+  {
+    async.eachSeries(results.load, 
+                     function (channel, callback) { 
+                       if (channel.factual && channel.factual.unresolved !== true) { 
+                         console.log(channel.name + " (" + channel._id + ") already factual resolved fid=" + channel.factual.id);
+                         return process.nextTick(callback);
+                       }
+
+                       factual.resolve(channel, function(error, resolved) { 
+                         if (error) { 
+                           console.log ("resolve error: " + js.pp(error));
+                           return callback(error);
+                         }
+                         else if (resolved) { 
+                           var factual = { 
+                             id: resolved.factual_id,
+                             lastRefresh: new Date()
+                           }
+                           if (channel.factual) { 
+                             console.log(js.pp(channel));
+                           }
+                           mongo.channels.update({_id: channel._id}, {$set: {'factual': factual}}, function (error) { 
+                             if (error && error.code === 11001) { 
+                               console.log("Duplicate factual id " + factual.id + " for "+ channel.name + "(" + channel._id + ")");
+                               mongo.channels.findOne({'factual.id': factual.id}, function(error, existing) {
+                                 if (error) { 
+                                   callback(error);
+                                 }
+                                 else {
+                                   channelManager.mergePlaceChannels(existing._id, channel._id, callback);
+                                 }
+                               });
+                             }
+                             else {
+                               callback(error);
+                             }
+                           });
+                         }
+                         else {
+                           callback();
+                         }
+                       });
+                     }, 
+                     function done(error) { 
+                       if (error) { 
+                         console.log("Error: " + js.pp(error));
+                       }
+                       mongo.close();
+                     });
+  }
+  else {
+    mongo.close();
+  }
+});
+
+

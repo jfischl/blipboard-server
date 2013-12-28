@@ -1,0 +1,40 @@
+{
+   "data": [
+      {
+         "fakeId": "222222222222222222222222", 
+         "likes": 63,
+         "no name": "Missing name property",
+         "location": {
+            "street": "544 Castro St",
+            "city": "San Francisco",
+            "state": "CA",
+            "country": "United States",
+            "zip": "94114-2512",
+            "latitude": 37.760202716039,
+            "longitude": -122.43508264941
+         },
+         "id": "107526052618126"
+      },
+      {
+         "fakeId": "333333333333333333333333", 
+         "likes": 27,
+         "name": "Missing location",
+         "id": "109110839123128"
+      },
+      {
+         "likes": 27,
+         "name": "Missing facebook id",
+         "location": {
+            "street": "524 Castro St",
+            "city": "San Francisco",
+            "state": "CA",
+            "country": "United States",
+            "zip": "94114-2512",
+            "latitude": 37.760556347153,
+            "longitude": -122.43504327725
+          }
+      }
+   ],
+   "paging": {
+   }
+}

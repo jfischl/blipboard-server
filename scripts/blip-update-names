@@ -1,0 +1,37 @@
+#!/usr/bin/env node
+var async = require('async');
+var assert = require('assert');
+var blipManager = require('../managers/blipManager');
+var js = require('../lib/javascript');
+var mongo = require('../lib/mongo');
+
+mongo.initialize(function (error) 
+{
+  if (error) {
+    console.log(js.pp(error));
+    process.exit(-1);
+  }
+  else {
+    mongo.channels.find({type: 'user', facebook: {$exists: true}}).toArray(updateAccounts);
+    function updateAccounts(error, users) { 
+      async.forEachLimit(users, 10, update, done);
+    }
+
+    function update(user, callback) { 
+      console.log("renaming " + user.displayName + " --> " + user.name);
+      async.parallel([
+        function (callback) {
+          mongo.channels.update({_id:user._id}, {$set:{displayName: user.name}}, {safe:true, multi:true}, callback);
+        },
+        function (callback) {
+          mongo.blips.update({'author._id':user._id}, {$set:{'author.displayName': user.name}}, {safe:true, multi:true}, callback);
+        }], callback);
+    }
+    
+    function done() {
+      console.log("done.");
+      mongo.close();
+      process.exit();
+    }
+  }
+});

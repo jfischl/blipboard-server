@@ -1,0 +1,53 @@
+#!/usr/bin/env node
+var assert = require('assert');
+var async = require('async');
+var moment = require('moment');
+var winston = require('winston');
+
+var categories = require('../data/categories');
+var factual = require('../lib/factual');
+var mongo = require('../lib/mongo');
+var js = require('../lib/javascript');
+var Bounds = require('../lib/bounds').Bounds;
+var blipNotificationService = require('../managers/blipNotificationService');
+
+var argv = require('optimist')
+  .usage('Forces alerts to people in a region\nUsage: $0 [--region sw-lat,sw-lon|ne-lat,ne-lon] [--identify]')
+  .alias('region', 'r').describe('region', 'specify a region. e.g. --region 37.7469,-122.4201|37.7563,-122.4453').demand('region')
+  .alias('identify', 'i').describe('identify', 'only identify the affected users')
+  .argv;
+
+var region = new Bounds(argv.region);
+
+console.log((argv.identify ? "identify only for: " : "send alerts for: ") + js.ppc(region.tileIndexes()));
+//console.log("Finding users in " + js.pp(region));
+
+async.series({
+  mongo: function(callback) {
+    mongo.initialize(callback);
+  },
+  loadUsers: function(callback) { 
+    var stale = moment().subtract('hours', 4).toDate();
+    mongo.channels.find({type: 'user', 
+                         'currentLocation.updated': {$gte: stale}, 
+                         'currentLocation.tileIndex': {$in: region.tileIndexes()}}).toArray(callback);
+  }
+}, function(error, results) { 
+  if (error) { 
+    console.log("Failed:"+js.pp(error));
+  }
+  else {
+    async.eachLimit(results.loadUsers, 5, alert, mongo.close);
+  }
+});
+
+var alert = function alert(user, callback) 
+{
+  console.log("Alerting: " + user.name + " (" + user._id + ") in " + user.currentLocation.tileIndex);
+  if (argv.identify) { 
+    callback();
+  }
+  else {
+    blipNotificationService.pushNotifyUserAtLocation(user._id, user.currentLocation.latitude, user.currentLocation.longitude, callback);
+  }
+};

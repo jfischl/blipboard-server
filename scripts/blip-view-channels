@@ -1,0 +1,18 @@
+#!/usr/bin/env node
+var mongo = require('../lib/mongo');
+var places = require('../managers/placeManager');
+
+console.log(process.argv[2]);
+var latlng = eval("["+ process.argv[2]+"]");
+var latitude = parseFloat(latlng[0]);
+var longitude = parseFloat(latlng[1]);
+console.log("latlng="+latlng);
+console.log("latitude,longitude="+[latitude,longitude]);
+mongo.initialize(function () {
+  places.search(null,
+                {location:{latitude:latitude,longitude:longitude},type:'place'},
+                function (error,result) {
+                  console.log(error||result);
+                  process.exit();
+                });
+});

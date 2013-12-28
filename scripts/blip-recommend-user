@@ -1,0 +1,60 @@
+#!/usr/bin/env node
+var mongo = require('../lib/mongo');
+var js = require('../lib/javascript');
+var async = require('async');
+var channelManager = require('../managers/channelManager');
+
+var argv = require('optimist')
+  .usage('Deletes a channel (user or place) and all associated documents.\nUsage: $0 [--id channel-id] [--name "full name"] [--email joe@example.com]')
+  .check(function(argv) { 
+    var count = 0;
+    if (argv.id) count++;
+    if (argv.name) count++;
+    if (argv.email) count++;
+    return count === 1;
+  })
+  .argv;
+
+mongo.initialize(function (error) 
+{
+  if (error) {
+    console.log(js.pp(error));
+  }
+  else {
+    var criterion = { type: 'user' };
+    if (argv.name) { 
+      criterion = {name:argv.name};
+    }
+    else if (argv.id) { 
+      criterion = {_id:mongo.ObjectID(argv.id)};
+    }
+    else if (argv.email) { 
+      criterion = {email:argv.email};
+    }
+    else {
+      console.log(argv.help());
+      process.exit(-1);
+    }
+
+    //console.log("Searching for " + js.pp(criterion));
+    mongo.channels.findOne(criterion,{fields:['_id']},function (error,result) {
+      if (error) {
+        console.log("Failed to find matching channel: " + js.pp(error));
+        mongo.db.close();
+        process.exit(-1);
+      }
+      else if (result && js.classOf(result._id)===mongo.ObjectID) {
+        channelManager.recommendUserChannel(result._id, function(error) { 
+          mongo.db.close();
+          process.exit(0);
+        });
+      }
+      else {
+        console.log("Failed to find matching channel. ");
+        mongo.db.close();
+        process.exit(-1);
+      }
+    });
+  }
+});
+

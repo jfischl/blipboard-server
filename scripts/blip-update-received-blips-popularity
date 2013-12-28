@@ -1,0 +1,73 @@
+#!/usr/bin/env node
+var async = require('async');
+var assert = require('assert');
+var blipManager = require('../managers/blipManager');
+var js = require('../lib/javascript');
+var mongo = require('../lib/mongo');
+
+mongo.initialize(function (error) 
+{
+  if (error) {
+    console.log(js.pp(error));
+    process.exit(-1);
+  }
+  else {
+    var allPlacesQueued = false, removed=0;
+    function update(rblip, callback) { 
+      
+      mongo.blips.findOne({'_id': rblip.blip}, {fields:['popularity', 'author.type', 'effectiveDate', 'expiryTime']}, function (error, blip) {
+        if (error) { 
+          callback(error);
+        }
+        else if (blip) {
+          if (blip.blacklisted) { 
+            console.log("Remove blacklisted blip from received: " + blip._id + " author:" + blip.author.name);
+            mongo.receivedBlips.remove({_id:rblip._id}, callback);
+            removed++;
+          }
+          else {
+            console.log("Updating received-blip: " + rblip._id + " " + rblip.popularity + " --> " + blip.popularity);
+            mongo.receivedBlips.update({_id:rblip._id}, 
+                                       {$set:{popularity:blip.popularity, 
+                                              effectiveDate: blip.effectiveDate,
+                                              expiryTime: blip.expiryTime,
+                                              authorType: blip.author.type}
+                                       }, 
+                                       callback);
+          }
+        }
+        else {
+          console.log("No matching blip for " + rblip._id);
+          mongo.receivedBlips.remove({_id:rblip._id}, callback);
+          removed++;
+        }
+      });
+    }
+    
+    var queue = async.queue(update, 25);
+    queue.drain = function() { 
+      if (allPlacesQueued) { 
+        console.log("done. removed=" + removed);
+        mongo.close();
+        process.exit();
+      }
+    }
+    mongo.receivedBlips.findEach({}, function(error, rblip) { 
+      if (!error) {
+        if (rblip) { 
+          queue.push(rblip);
+        }
+        else {
+          console.log("*************************");
+          allPlacesQueued = true;
+          if (queue.length() === 0) { 
+            // without this, the queue may be empty before allPlacesQueued is set true
+            console.log("done. removed=" + removed);
+            mongo.close();
+            process.exit();
+          }
+        }
+      }
+    });
+  }
+});

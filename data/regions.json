@@ -1,0 +1,12 @@
+{
+  "San Francisco": {
+    "southwest": {
+      "latitude": 37.707,
+      "longitude": -122.52
+    },
+    "northeast": {
+      "latitude": 37.81,
+      "longitude": -122.375
+    }
+  }
+}

@@ -1,0 +1,19 @@
+title Blipboard Pub/Sub Place
+
+participant "Alice" as A
+participant "Blipboard" as BB
+participant "Bob" as B
+participant "The Gap" as G
+
+A->BB: subscribe("The Gap")
+B->BB: subscribe("The Gap")
+G->BB: publish "sale on 6/15 at 4pm"
+note over A,BB: Alice walks nearby the Gap
+A->BB: update-location(lat1,lng1)
+BB->A: notify("sale on 6/15 at 4pm")
+note over B,BB
+ 1 week of time elapses
+ Bob bicycles a few blocks from The Gap. 
+end note
+B->BB: update-location(lat1,lng1)
+BB->B: notify("sale on 6/15 at 4pm")

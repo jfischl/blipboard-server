@@ -1,0 +1,22 @@
+#!/bin/bash
+scriptDir=$(cd `dirname $0` && pwd);
+if [ -f "$scriptDir/.user.login" ]; then
+    userOption="--user `cat $scriptDir/.user.login`"
+else
+    userOption=""
+fi
+
+while getopts s:u:h name
+do	case "$name" in
+        s)      server="$OPTARG";;
+        u)      userOption="--user $OPTARG";;
+	h)	echo "usage: bmarkread.sh [-u username:password] \"location\""
+                echo "where server=url or one of production,staging,localhost"
+                echo "  and location=\"latitude,longitude\" or an address (remember the quotes)"
+		exit 1;;
+	esac
+done
+shift $(($OPTIND-1))
+latlng=`$scriptDir/geocode "$1"` 
+domain=`$scriptDir/bresolveserverdomain.sh "$server"`
+curl "$domain/me/incoming/mark-read.txt" -d "latlng=$latlng" $userOption

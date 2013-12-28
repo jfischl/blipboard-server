@@ -1,0 +1,138 @@
+#!/usr/bin/env node
+
+var assert = require('assert');
+var sprintf = require('sprintf').sprintf;
+var async = require('async');
+
+var categories = require('../data/categories');
+var mongo = require('../lib/mongo');
+var placeManager = require('../managers/placeManager');
+var js = require('../lib/javascript');
+var option = process.argv[2];
+if (option=="-h") {
+   console.log("blip-update-place-categories [-h]|[-q]");
+   console.log("  -q quick mode.  Only update place & blips if place category is incorrect");
+}
+
+var quickMode = (option=="-q");
+var placeCount=0;
+if (quickMode) {
+  console.log("Quick mode: only updating changed categories.");
+}
+
+var processPlace = function processPlace(place, callback) {
+  var match = categories.matchPlaceCategory(place);
+  var blacklisted = categories.isBlacklisted(place);
+  place.category = match.category;
+  place.defaultTopic = match.topic;
+
+  if (quickMode && category==place.category) {
+    process.stdout.write(".");
+    callback();
+  }
+  else {
+    //console.log("updating '" + place.name + "' category='" + match.category + "' topic='" + match.topic + "' " + match.topicId);
+    assert(match.topicId);
+    assert(match.category);
+
+    async.parallel([
+      function updateChannels(callback) { 
+        mongo.channels.update({_id:place._id},{$set:{category: match.category,
+                                                     blacklisted: blacklisted,
+                                                     defaultTopicId: match.topicId}},
+                              {safe:true, multi:true},
+                              callback);
+      },
+      function updateBlips(callback) {
+        if (blacklisted) {
+          mongo.blips.remove({'author._id':place._id}, {safe:true}, callback);
+        }
+        else {
+          mongo.blips.update({'place._id':place._id},
+                             {$set:{'place.category': match.category, 
+                                    'topicIds': [match.topicId]
+                                   }},
+                             {multi:true, safe:true},
+                             callback);
+        }
+      },
+      function updateUserBlips(callback) { 
+        if (blacklisted) { 
+          // allow user-based blips at blacklisted places to show up. 
+          mongo.blips.update({'place._id':place._id, 'author.type': 'user'},
+                             {$set:{'place.category': match.category, 
+                                    'topicIds': [match.topicId]
+                                   }},
+                             {multi:true, safe:true},
+                             callback);
+        }
+        else { 
+          callback();
+        }
+      },
+      function updateReceivedBlips(callback) { 
+        mongo.receivedBlips.update({'placeId':place._id},
+                                   {$set:{'blacklisted':blacklisted,
+                                          'topicIds': [match.topicId] }},
+                                   {multi:true, safe:true},
+                                   callback);
+      }
+    ], function(error, results) { 
+      if (error) { 
+        console.log("*************error: " + js.pp(error));
+      }
+      else {
+        //console.log("r1=" + js.pp(results[1]));
+        console.log(sprintf("%5d: %s [category: %s] [topic: %s] [%s]", 
+                            placeCount++, 
+                            place.name, 
+                            match.category, 
+                            match.topicId, 
+                            (blacklisted ? "blacklisted" : "updated")));
+      }
+      callback(error,results);
+    });
+  }
+};
+
+async.series([ 
+  function(callback) { 
+    mongo.initialize(callback);
+  },
+  function (callback) { 
+    categories.loadTopicIds(callback);
+  }
+], function (error) { 
+  if (error) {
+    console.log("Failed to initialize");
+  }
+  else {
+    var allPlacesQueued = false;
+    var queue = async.queue(processPlace, 25);
+    queue.drain = function() { 
+      if (allPlacesQueued) {
+        console.log("done.");
+        mongo.close();
+        process.exit();
+      }
+    }
+    
+    mongo.channels.findEach({type:mongo.channelType.place},function (error,place) {
+      if (error) {
+        console.log("*************mongo error: " + js.pp(error));
+      }
+      else {
+        if (place) {
+          queue.push(place);
+        }
+        else {
+          allPlacesQueued = true;
+        }
+      }
+    });
+  }
+});
+
+
+                 
+                

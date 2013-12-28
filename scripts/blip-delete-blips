@@ -1,0 +1,33 @@
+#!/usr/bin/env node
+var mongo = require('../lib/mongo');
+var js = require('../lib/javascript');
+var async = require('async');
+var blipManager = require('../managers/blipManager');
+
+function usage() {
+  console.log("Usage:\nblip-delete-blips blipId1 blipId2 ...\nCareful!!! This permanently and irretrievably deletes blips and data from associated collections from the database.");
+}
+
+mongo.initialize(function (error) {
+
+  if (error) {
+    console.log("Database error: " + js.pp(error));
+  }
+  else {
+    var blipIds;
+    var criterion;
+    try {
+      blipIds = process.argv.splice(2).map(mongo.ObjectID);
+      blipManager.deleteBlips(blipIds, function(error, result) { 
+        if (error) {
+          console.log("Error: " + js.pp(error));
+        }
+        mongo.db.close();
+      });
+    }
+    catch (e) {
+      console.log("Error parsing ids: " + js.pp(e));
+      usage();
+    }
+  }
+});

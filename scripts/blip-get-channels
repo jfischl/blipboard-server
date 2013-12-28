@@ -1,0 +1,32 @@
+#!/bin/bash
+scriptDir=$(cd `dirname $0` && pwd);
+if [ -f "$scriptDir/.user.login" ]; then
+    userOption="--user `cat $scriptDir/.user.login`"
+else
+    userOption=""
+fi
+center="37.760445784292,-122.4348990529"
+type="place"
+
+while getopts s:l:t:u:h name
+do	case "$name" in
+        s)      server="$OPTARG";;
+	l)	center="$OPTARG";;
+	t)	type="$OPTARG";;
+        u)      userOption="--user $OPTARG";;
+	h)	echo "usage: bgetchannels.sh [-l location] [-u username:password] [-t type]"
+                echo "where server=url or one of production,staging,localhost"
+                echo "  and location=\"latitude,longitude\" or an address (remember the quotes)"
+		exit 1;;
+	esac
+done
+shift $(($OPTIND-1))
+
+latlng=`$scriptDir/geocode "$center"` 
+if [ "$?" != "0" ]; then
+   echo $latlng
+   exit 1;
+fi 
+domain=`$scriptDir/blip-resolve-server-domain "$server"`
+echo "curl \"$domain/blips/popular.txt?type=$type&latlng=$latlng\" $userOption  ==>"
+curl "$domain/channels.txt?type=$type&latlng=$latlng" $userOption

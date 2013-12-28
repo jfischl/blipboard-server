@@ -1,0 +1,33 @@
+#!/usr/bin/env node
+var mongo = require('../lib/mongo');
+var blipManager = require('../managers/blipManager');
+var Tile = require('../lib/tile').Tile;
+console.log(process.argv[2]);
+var latlng = eval("["+ process.argv[2]+"]");
+var latitude = parseFloat(latlng[0]);
+var longitude = parseFloat(latlng[1]);
+console.log("latlng="+latlng);
+console.log("latitude,longitude="+[latitude,longitude]);
+mongo.initialize(function () {
+  blipManager.getPopularBlips(
+    {latitude:latitude,longitude:longitude},
+    {},
+    function (error,blips) {
+      if (error) {
+        console.log(error);
+      }
+      else {
+        console.log("found:"+blips.length);
+        blips.map(function(blip) {
+          var author = blip.author;
+          var place = blip.place;
+          delete blip.author;
+          delete blip.place;
+          blip.author = {name:author.name, _id:author._id};
+          blip.place = {name:place.name, _id:place._id};
+          console.log(JSON.stringify(blip,null,2));
+        });
+      }
+      process.exit();
+    });
+});

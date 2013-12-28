@@ -1,0 +1,1091 @@
+[
+{
+  "_id": "42938b1f60b8f375a4085522",
+    "name": "Rosebank",
+    "type": "place",
+    "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+    "location": {
+      "latitude": -26.203946428571,
+      "longitude": 28.047258714286,
+      "tileIndex": "300300331313000333"
+    },
+    "facebook": {
+      "id": "115489231883067",
+      "likes": 19
+    }
+},
+{
+  "_id": "c43b72e17ab8f5156638d5c4",
+  "name": "Newtown",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.20412,
+    "longitude": 28.04745,
+    "tileIndex": "300300331313000333"
+  },
+  "facebook": {
+    "id": "199969940097753",
+    "likes": 3
+  }
+},
+{
+  "_id": "bb7ebbcdb20e62c69dbc4745",
+  "name": "5 Simmonds Standard Bank",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.20412,
+    "longitude": 28.04745,
+    "tileIndex": "300300331313000333"
+  },
+  "facebook": {
+    "id": "264309206965568",
+    "likes": 2
+  }
+},
+{
+  "_id": "d9d010c54e080900e74310c4",
+  "name": "Ster kinekor junction..carlton centre...",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.20395,
+    "longitude": 28.04742,
+    "tileIndex": "300300331313000333"
+  },
+  "facebook": {
+    "id": "236601063053765",
+    "likes": 22
+  }
+},
+{
+  "_id": "f8565073f407739e6c5ebb67",
+  "name": "JHB CBD",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.20494,
+    "longitude": 28.04746,
+    "tileIndex": "300300331313002111"
+  },
+  "facebook": {
+    "id": "268702093145418",
+    "likes": 52
+  }
+},
+{
+  "_id": "763480c710dd4cf873b018be",
+  "name": "Carlton Centre",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.205384542911,
+    "longitude": 28.04664889757,
+    "tileIndex": "300300331313002110"
+  },
+  "facebook": {
+    "id": "180063192008477",
+    "likes": 544
+  }
+},
+{
+  "_id": "2ea813aa4eee84901a8b1cef",
+  "name": "Hillbrow high point",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.20412,
+    "longitude": 28.04745,
+    "tileIndex": "300300331313000333"
+  },
+  "facebook": {
+    "id": "253778528004180"
+  }
+},
+{
+  "_id": "4be8d6c95ae454dcd67ef2c9",
+  "name": "Mcdonalds, Carlton Centre",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.205454850832,
+    "longitude": 28.046661922958,
+    "tileIndex": "300300331313002110"
+  },
+  "facebook": {
+    "id": "102267133207817",
+    "likes": 64
+  }
+},
+{
+  "_id": "f243d608d5e6162f347b0a1b",
+  "name": "Galaxy @carlton center",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.204703314406,
+    "longitude": 28.047094702779,
+    "tileIndex": "300300331313000333"
+  },
+  "facebook": {
+    "id": "215778131799343",
+    "likes": 42
+  }
+},
+{
+  "_id": "af65420d6fe782f4fc7383b6",
+  "name": "Cappello",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.205464307903,
+    "longitude": 28.046681146965,
+    "tileIndex": "300300331313002110"
+  },
+  "facebook": {
+    "id": "208013845880087",
+    "likes": 75
+  }
+},
+{
+  "_id": "214fd547c521a5f64d20cae2",
+  "name": "Capello, Carlton Center",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.20551623721,
+    "longitude": 28.04667979129,
+    "tileIndex": "300300331313002110"
+  },
+  "facebook": {
+    "id": "139942872769553",
+    "likes": 82
+  }
+},
+{
+  "_id": "32fc8c0c0d5d36fba840354e",
+  "name": "Spur ,Calton Centre",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.205615782648,
+    "longitude": 28.04672659305,
+    "tileIndex": "300300331313002111"
+  },
+  "facebook": {
+    "id": "159088297515790",
+    "likes": 51
+  }
+},
+{
+  "_id": "f087e2a804a5b67dd7d96ecc",
+  "name": "Carlton Gym",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.205609473846,
+    "longitude": 28.046780388148,
+    "tileIndex": "300300331313002111"
+  },
+  "facebook": {
+    "id": "113636102046365",
+    "likes": 22
+  }
+},
+{
+  "_id": "783abff19b875498d86da967",
+  "name": "Wimpy carlton centre",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.205338351348,
+    "longitude": 28.04651788234,
+    "tileIndex": "300300331313002110"
+  },
+  "facebook": {
+    "id": "157390254324224",
+    "likes": 32
+  }
+},
+{
+  "_id": "c7f02e19007665a0a1a0474d",
+  "name": "Spur",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.205469196554,
+    "longitude": 28.046499849487,
+    "tileIndex": "300300331313002110"
+  },
+  "facebook": {
+    "id": "204462029584370",
+    "likes": 41
+  }
+},
+{
+  "_id": "c78bd71ac0e2f9f68ba917e2",
+  "name": "My place",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.20393,
+    "longitude": 28.04862,
+    "tileIndex": "300300331313001222"
+  },
+  "facebook": {
+    "id": "124694667623863",
+    "likes": 25
+  }
+},
+{
+  "_id": "cfdbf5708cbea4e5ba51465c",
+  "name": "LOFTS@66",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.203586168224,
+    "longitude": 28.046868598131,
+    "tileIndex": "300300331313000333"
+  },
+  "facebook": {
+    "id": "124210784330933",
+    "likes": 2
+  }
+},
+{
+  "_id": "328b769b31540c23cb2c3e2b",
+  "name": "Sterkinekor, Carlton",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.205763783952,
+    "longitude": 28.046979720519,
+    "tileIndex": "300300331313002111"
+  },
+  "facebook": {
+    "id": "228879903792438",
+    "likes": 18
+  }
+},
+{
+  "_id": "b3e38a181f84db40f181a029",
+  "name": "Mcdonald Hvng A Mcflurrey",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.205374473684,
+    "longitude": 28.04646,
+    "tileIndex": "300300331313002110"
+  },
+  "facebook": {
+    "id": "180560068662197",
+    "likes": 8
+  }
+},
+{
+  "_id": "b84347b40f3a5bcfece25fe3",
+  "name": "Nandos carlton centre",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.20552,
+    "longitude": 28.04657,
+    "tileIndex": "300300331313002110"
+  },
+  "facebook": {
+    "id": "253732271337948",
+    "likes": 18
+  }
+},
+{
+  "_id": "b1bb8a6ed083aa0db8341db8",
+  "name": "Work",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.203951428571,
+    "longitude": 28.049215714286,
+    "tileIndex": "300300331313001222"
+  },
+  "facebook": {
+    "id": "156070697792343",
+    "likes": 5
+  }
+},
+{
+  "_id": "5c7454bc2ebc32c6b76f904a",
+  "name": "Fashion Lofts",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.202792,
+    "longitude": 28.047720333333,
+    "tileIndex": "300300331313000331"
+  },
+  "facebook": {
+    "id": "139912772759515",
+    "likes": 1
+  }
+},
+{
+  "_id": "67cc9c1d8d461b45ba9623ab",
+  "name": "Carlton Centre Rooftop",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.205278,
+    "longitude": 28.046913,
+    "tileIndex": "300300331313002111"
+  },
+  "facebook": {
+    "id": "101363586635225",
+    "likes": 2
+  }
+},
+{
+  "_id": "12c78bc334938e4f770144b4",
+  "name": "Caltorn Center",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.204731710526,
+    "longitude": 28.047225789474,
+    "tileIndex": "300300331313000333"
+  },
+  "facebook": {
+    "id": "205698589484198",
+    "likes": 2
+  }
+},
+{
+  "_id": "7fa09da887cc1c2aa68d0661",
+  "name": "Mcdonald Hvng A Mcflurrey",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.205374473684,
+    "longitude": 28.04646,
+    "tileIndex": "300300331313002110"
+  },
+  "facebook": {
+    "id": "180560068662197",
+    "likes": 8
+  }
+},
+{
+  "_id": "ba29c2e4b6c573370a3b2bfb",
+  "name": "Marble Towers",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.202107835955,
+    "longitude": 28.046626554633,
+    "tileIndex": "300300331313000312"
+  },
+  "facebook": {
+    "id": "115423255204035",
+    "likes": 6
+  }
+},
+{
+  "_id": "57ebbba9ddf7b9688f132678",
+  "name": "Deboniars carlton centre",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.20553,
+    "longitude": 28.04657,
+    "tileIndex": "300300331313002110"
+  },
+  "facebook": {
+    "id": "251012711598724",
+    "likes": 9
+  }
+},
+{
+  "_id": "b8427d947feac6bfb2ab3be7",
+  "name": "Melrose arch",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.204802083333,
+    "longitude": 28.047460416667,
+    "tileIndex": "300300331313002111"
+  },
+  "facebook": {
+    "id": "219450374761967",
+    "likes": 14
+  }
+},
+{
+  "_id": "4ae5a097c0ea507237017b5f",
+  "name": "Joburg",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.202456567164,
+    "longitude": 28.046739029851,
+    "tileIndex": "300300331313000331"
+  },
+  "facebook": {
+    "id": "240979922601633",
+    "likes": 26
+  }
+},
+{
+  "_id": "107feef12d161ea187bcc2b4",
+  "name": "Sandton Mall",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.20399,
+    "longitude": 28.04849,
+    "tileIndex": "300300331313001222"
+  },
+  "facebook": {
+    "id": "254855711211949",
+    "likes": 37
+  }
+},
+{
+  "_id": "1e02cdc2195bd54ae00299a6",
+  "name": "Church",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.203662587413,
+    "longitude": 28.047931958042,
+    "tileIndex": "300300331313000333"
+  },
+  "facebook": {
+    "id": "161253327300147",
+    "likes": 60
+  }
+},
+{
+  "_id": "ae03ce57c10d67e1ee3f5ed4",
+  "name": "Colloseum building",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.205831111111,
+    "longitude": 28.046297222222,
+    "tileIndex": "300300331313002110"
+  },
+  "facebook": {
+    "id": "137314016341035",
+    "likes": 6
+  }
+},
+{
+  "_id": "36596fc27197a8ad75e9e343",
+  "name": "Calton Centre Mc Donalds",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.204602424242,
+    "longitude": 28.046702909091,
+    "tileIndex": "300300331313000332"
+  },
+  "facebook": {
+    "id": "338757376166195",
+    "likes": 2
+  }
+},
+{
+  "_id": "177cb5454ac9bf455be4eee4",
+  "name": "Macdonald Calton Jhb",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.20494,
+    "longitude": 28.04746,
+    "tileIndex": "300300331313002111"
+  },
+  "facebook": {
+    "id": "140746716013515",
+    "likes": 12
+  }
+},
+{
+  "_id": "b4571a6c20d7fc9f67e03784",
+  "name": "Capellos Ghandi Sqaure.",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.204446,
+    "longitude": 28.046386,
+    "tileIndex": "300300331313000332"
+  },
+  "facebook": {
+    "id": "128864590536527"
+  }
+},
+{
+  "_id": "8cabc15e98ff28678556c106",
+  "name": "Debonairs",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.205033333333,
+    "longitude": 28.04688,
+    "tileIndex": "300300331313002111"
+  },
+  "facebook": {
+    "id": "225406237521711",
+    "likes": 7
+  }
+},
+{
+  "_id": "e5710ce91854b06261bb9ced",
+  "name": "Transnet SOC Ltd",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/hprofile-ak-snc4/211086_242238972461167_2159905_s.jpg",
+  "location": {
+    "latitude": -26.20499,
+    "longitude": 28.04678,
+    "tileIndex": "300300331313002111"
+  },
+  "facebook": {
+    "id": "242238972461167",
+    "likes": 233
+  }
+},
+{
+  "_id": "453b1c7340b6c11f64dc2044",
+  "name": "Carlton View Flats",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.205115,
+    "longitude": 28.047151,
+    "tileIndex": "300300331313002111"
+  },
+  "facebook": {
+    "id": "161487680607578",
+    "likes": 2
+  }
+},
+{
+  "_id": "40c0e548f667ca9e5c714e48",
+  "name": "Newscafe",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.2055556,
+    "longitude": 28.0470124,
+    "tileIndex": "300300331313002111"
+  },
+  "facebook": {
+    "id": "246822832022718",
+    "likes": 8
+  }
+},
+{
+  "_id": "a7a9936bf8eb763c007b96d3",
+  "name": "Tribeca Lofts",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.20302,
+    "longitude": 28.04546,
+    "tileIndex": "300300331313000330"
+  },
+  "facebook": {
+    "id": "146911108721630"
+  }
+},
+{
+  "_id": "058f5b90e6e59447385a8629",
+  "name": "Chisa nyama midrand",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.20394,
+    "longitude": 28.04861,
+    "tileIndex": "300300331313001222"
+  },
+  "facebook": {
+    "id": "166346143440518",
+    "likes": 28
+  }
+},
+{
+  "_id": "1134b7b059d841b283e630b8",
+  "name": "Department of Labour",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.205076315789,
+    "longitude": 28.047803684211,
+    "tileIndex": "300300331313002111"
+  },
+  "facebook": {
+    "id": "172757386131246"
+  }
+},
+{
+  "_id": "360247b4e68c7c19bb571625",
+  "name": "Rainbow Road Safety Ambassadors Academy, South Africa",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/hprofile-ak-snc4/41567_133030626721367_2781_s.jpg",
+  "location": {
+    "latitude": -26.20493,
+    "longitude": 28.04667,
+    "tileIndex": "300300331313002110"
+  },
+  "facebook": {
+    "id": "133030626721367",
+    "likes": 6
+  }
+},
+{
+  "_id": "9f498b21b4e0d1b479dd9090",
+  "name": "The Believer",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/hprofile-ak-snc4/50555_211656177058_6215942_s.jpg",
+  "location": {
+    "latitude": -26.20342,
+    "longitude": 28.04647,
+    "tileIndex": "300300331313000330"
+  },
+  "facebook": {
+    "id": "211656177058",
+    "likes": 50
+  }
+},
+{
+  "_id": "6306607b2a2823b598d34212",
+  "name": "Caltorn Centre,jhb",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.205364012346,
+    "longitude": 28.046756111111,
+    "tileIndex": "300300331313002111"
+  },
+  "facebook": {
+    "id": "332409990121970",
+    "likes": 5
+  }
+},
+{
+  "_id": "708b84f9c3b33267c2f800cf",
+  "name": "Capellos",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.20609,
+    "longitude": 28.04682,
+    "tileIndex": "300300331313002113"
+  },
+  "facebook": {
+    "id": "202328189779190",
+    "likes": 12
+  }
+},
+{
+  "_id": "0a5b8f5e5fce8f0732998801",
+  "name": "Klamson Towers",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.205245714286,
+    "longitude": 28.048164285714,
+    "tileIndex": "300300331313003000"
+  },
+  "facebook": {
+    "id": "191689290866892"
+  }
+},
+{
+  "_id": "7f4153467f769cfbeb0d46c5",
+  "name": "Falcon Peak Spur",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.2053,
+    "longitude": 28.04641,
+    "tileIndex": "300300331313002110"
+  },
+  "facebook": {
+    "id": "246714228706398",
+    "likes": 1
+  }
+},
+{
+  "_id": "a02c049728b2335dfce805e8",
+  "name": "Providence Academy",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.202611388889,
+    "longitude": 28.046877857143,
+    "tileIndex": "300300331313000331"
+  },
+  "facebook": {
+    "id": "244858805547224"
+  }
+},
+{
+  "_id": "af75b75ee01f73569484dfa5",
+  "name": "Piper Electronics",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.20497,
+    "longitude": 28.04628,
+    "tileIndex": "300300331313002110"
+  },
+  "facebook": {
+    "id": "120537224636353",
+    "likes": 1
+  }
+},
+{
+  "_id": "8d09094b40f3d7cdfd38e0e3",
+  "name": "Juta Bookshop, Carlton Centre, Jhb",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.20495,
+    "longitude": 28.04615,
+    "tileIndex": "300300331313002110"
+  },
+  "facebook": {
+    "id": "244241455656535",
+    "likes": 1
+  }
+},
+{
+  "_id": "3cdeae4037aa74d3211bc280",
+  "name": "Top of The Carlton Centre",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.205531,
+    "longitude": 28.046896,
+    "tileIndex": "300300331313002111"
+  },
+  "facebook": {
+    "id": "303334913020785",
+    "likes": 2
+  }
+},
+{
+  "_id": "66fc581e51dc582160bc11df",
+  "name": "Carlton Center Truworths",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.205430634921,
+    "longitude": 28.046861507937,
+    "tileIndex": "300300331313002111"
+  },
+  "facebook": {
+    "id": "146058272137975",
+    "likes": 4
+  }
+},
+{
+  "_id": "399af47b678b1abc04ff3ac5",
+  "name": "Fourwayz Mall",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.20553,
+    "longitude": 28.04657,
+    "tileIndex": "300300331313002110"
+  },
+  "facebook": {
+    "id": "173793472698763",
+    "likes": 4
+  }
+},
+{
+  "_id": "857f6f17d79f9e582e5e029d",
+  "name": "Liquor city carlton centre",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.20564,
+    "longitude": 28.04707,
+    "tileIndex": "300300331313002111"
+  },
+  "facebook": {
+    "id": "159810100772497",
+    "likes": 3
+  }
+},
+{
+  "_id": "121aaf99b7c7241f1a4f274d",
+  "name": "Soweto @  MAPONYA",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.202581538462,
+    "longitude": 28.048026153846,
+    "tileIndex": "300300331313000331"
+  },
+  "facebook": {
+    "id": "294705797212453",
+    "likes": 130
+  }
+},
+{
+  "_id": "639d8eb8a583cb941d0d2d16",
+  "name": "Pic 'n Pay, Carlton Centre",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.20564,
+    "longitude": 28.04707,
+    "tileIndex": "300300331313002111"
+  },
+  "facebook": {
+    "id": "264846276876327",
+    "likes": 2
+  }
+},
+{
+  "_id": "96f0b4d20e2af4c0d4d900f3",
+  "name": "777 Logistics and Projects Solutions",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/hprofile-ak-snc4/174566_114822951905169_334328881_s.jpg",
+  "location": {
+    "latitude": -26.20459,
+    "longitude": 28.04552,
+    "tileIndex": "300300331313000332"
+  },
+  "facebook": {
+    "id": "114822951905169",
+    "likes": 67
+  }
+},
+{
+  "_id": "1f0cf66ed4e6f6fad8753004",
+  "name": "Mcdonald Jeppe And Small Street",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.203,
+    "longitude": 28.04545,
+    "tileIndex": "300300331313000330"
+  },
+  "facebook": {
+    "id": "257459717620767",
+    "likes": 1
+  }
+},
+{
+  "_id": "fe9c85a48063c2656b27fa58",
+  "name": "Chaf pozi",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.20388,
+    "longitude": 28.049351666667,
+    "tileIndex": "300300331313001222"
+  },
+  "facebook": {
+    "id": "206225776088688",
+    "likes": 36
+  }
+},
+{
+  "_id": "3d21566f613cd348271b0fe4",
+  "name": "Photo Sun",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/hprofile-ak-snc4/211122_187680174615866_365349_s.jpg",
+  "location": {
+    "latitude": -26.20353,
+    "longitude": 28.04552,
+    "tileIndex": "300300331313000332"
+  },
+  "facebook": {
+    "id": "187680174615866",
+    "likes": 17
+  }
+},
+{
+  "_id": "c4f284a6a135859f01c0c89a",
+  "name": "Broadcast House",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.20601,
+    "longitude": 28.04832,
+    "tileIndex": "300300331313003002"
+  },
+  "facebook": {
+    "id": "104329276337441"
+  }
+},
+{
+  "_id": "5b6dba1bd0d3b02d2709b5a5",
+  "name": "Wimpy-Joburg",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.2056,
+    "longitude": 28.04599,
+    "tileIndex": "300300331313002110"
+  },
+  "facebook": {
+    "id": "238978799500752",
+    "likes": 4
+  }
+},
+{
+  "_id": "0bab38d975d28e94045a4072",
+  "name": "ZAR Lounge",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.202145,
+    "longitude": 28.047124,
+    "tileIndex": "300300331313000313"
+  },
+  "facebook": {
+    "id": "200400593368233",
+    "likes": 2
+  }
+},
+{
+  "_id": "013f632a2ee295876cdf5d4d",
+  "name": "Millennia Projects Management Services",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/hprofile-ak-snc4/27525_10150154592580433_486_s.jpg",
+  "location": {
+    "latitude": -26.20439,
+    "longitude": 28.04502,
+    "tileIndex": "300300331313000323"
+  },
+  "facebook": {
+    "id": "10150154592580433",
+    "likes": 2
+  }
+},
+{
+  "_id": "8c65af53a81006dd4e015ea4",
+  "name": "Mokgalabone Attorneys",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/hprofile-ak-snc4/373203_226909187380872_13224674_s.jpg",
+  "location": {
+    "latitude": -26.2049,
+    "longitude": 28.04711,
+    "tileIndex": "300300331313002111"
+  },
+  "facebook": {
+    "id": "226909187380872",
+    "likes": 6
+  }
+},
+{
+  "_id": "9e3b0579857cbfbdc0916b34",
+  "name": "Worksoft Events",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/hprofile-ak-ash2/373484_193132897443143_906288333_s.jpg",
+  "location": {
+    "latitude": -26.2049,
+    "longitude": 28.04711,
+    "tileIndex": "300300331313002111"
+  },
+  "facebook": {
+    "id": "193132897443143",
+    "likes": 6
+  }
+},
+{
+  "_id": "620bbe8c585cf331a7f4cdc3",
+  "name": "Success Business Registrations and Tax Consulting",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/hprofile-ak-snc4/276945_157282307716036_683641781_s.jpg",
+  "location": {
+    "latitude": -26.20495,
+    "longitude": 28.04672,
+    "tileIndex": "300300331313002110"
+  },
+  "facebook": {
+    "id": "157282307716036",
+    "likes": 71
+  }
+},
+{
+  "_id": "cf489d5dad7cf68946701f9e",
+  "name": "Saacso",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/hprofile-ak-snc4/373279_204779856275468_1737941850_s.jpg",
+  "location": {
+    "latitude": -26.20495,
+    "longitude": 28.04672,
+    "tileIndex": "300300331313002110"
+  },
+  "facebook": {
+    "id": "204779856275468",
+    "likes": 52
+  }
+},
+{
+  "_id": "539ba7d9c0ebd053efcc7e05",
+  "name": "Angelsom Holidays",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/hprofile-ak-snc4/373220_247742955239759_1580234733_s.jpg",
+  "location": {
+    "latitude": -26.20495,
+    "longitude": 28.04672,
+    "tileIndex": "300300331313002110"
+  },
+  "facebook": {
+    "id": "247742955239759",
+    "likes": 114
+  }
+},
+{
+  "_id": "63bf1f7dde78559f2ffc8ad9",
+  "name": "Kompulink Systems",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/hprofile-ak-snc4/276833_202458146477765_5229864_s.jpg",
+  "location": {
+    "latitude": -26.2049198,
+    "longitude": 28.0469799,
+    "tileIndex": "300300331313002111"
+  },
+  "facebook": {
+    "id": "202458146477765",
+    "likes": 6
+  }
+},
+{
+  "_id": "789018cca82f8b4cc001848e",
+  "name": "Winnie",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/static-ak/rsrc.php/v1/yN/r/cDKJtvtlYv5.png",
+  "location": {
+    "latitude": -26.2049408,
+    "longitude": 28.0468006,
+    "tileIndex": "300300331313002111"
+  },
+  "facebook": {
+    "id": "210699465656932",
+    "likes": 2
+  }
+},
+{
+  "_id": "ad7807a8e5c6b37abc4022b3",
+  "name": "UNIGLOBE SUNSHINE TRAVEL",
+  "type": "place",
+  "picture": "http://profile.ak.fbcdn.net/hprofile-ak-snc4/372866_65058799137_1243393725_s.jpg",
+  "location": {
+    "latitude": -26.20499,
+    "longitude": 28.04678,
+    "tileIndex": "300300331313002111"
+  },
+  "facebook": {
+    "id": "65058799137",
+    "likes": 30
+  }
+}
+]
+

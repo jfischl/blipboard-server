@@ -1,0 +1,56 @@
+[
+      {
+         "likes": 27,
+         "name": "All Season Restaurant",
+         "location": {
+            "street": "524 Castro St",
+            "city": "San Francisco",
+            "state": "CA",
+            "country": "United States",
+            "zip": "94114-2512",
+            "latitude": 37.760556347153,
+            "longitude": -122.43504327725
+         },
+         "id": "109110839123128"
+      },
+      {
+         "likes": 27,
+         "name": "Amiebrown's Pad",
+         "location": {
+            "city": "San Francisco",
+            "state": "CA",
+            "country": "United States",
+            "latitude": 37.760251186031,
+            "longitude": -122.43494499712
+         },
+         "id": "102933859768461"
+      },
+      {
+         "likes": 20,
+         "name": "The Dancing Pig",
+         "location": {
+            "street": "544 Castro Street",
+            "city": "San Francisco",
+            "state": "CA",
+            "country": "United States",
+            "zip": "94114",
+            "latitude": 37.760259656969,
+            "longitude": -122.43494250536
+         },
+         "id": "181401098631015"
+      },
+      {
+         "likes": 798,
+         "name": "Best in Show",
+         "location": {
+            "street": "545 Castro Street",
+            "city": "San Francisco",
+            "state": "CA",
+            "country": "United States",
+            "zip": "94114",
+            "latitude": 37.760319214046,
+            "longitude": -122.43482596721
+         },
+         "id": "227421215067"
+      }
+]

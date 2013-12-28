@@ -1,0 +1,23 @@
+#!/bin/bash
+scriptDir=$(cd `dirname $0` && pwd);
+if [ -f "$scriptDir/.user.login" ]; then
+    userOption="--user `cat $scriptDir/.user.login`"
+else
+    userOption=""
+fi
+center="37.760445784292,-122.4348990529"
+type="place"
+
+while getopts s:u:h name
+do	case "$name" in
+        s)      server="$OPTARG";;
+        u)      userOption="--user $OPTARG";;
+	h)	echo "usage: bgetreceived.sh [-u username:password]"
+                echo "where server=url or one of production,staging,localhost"
+		exit 1;;
+	esac
+done
+shift $(($OPTIND-1))
+center="$1"
+domain=`$scriptDir/bresolveserverdomain.sh "$server"`
+curl "$domain/me/received.txt" $userOption

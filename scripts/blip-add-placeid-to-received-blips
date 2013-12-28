@@ -1,0 +1,31 @@
+#!/usr/bin/env node
+
+var async = require('async');
+var db = require('mongoskin').db(process.env.MONGOHQ_URL, {safe: true});
+
+console.log( 'retreiving received blips' );
+
+var done = function done ( error ) {
+  if ( error ) console.log( 'something went wrong: ' + error );
+  console.log( 'done' );
+  db.close();
+}
+
+var update = function update ( received, callback ) {
+  db.collection('Blip').find({ _id: received.blip }).toArray(function onGotBlipDoc ( error, blips ) {
+    if ( error ) return callback(error);
+    console.log("blip = " + JSON.stringify(blips,null,1));
+    var blip = blips.shift();
+
+    if ( !blip ) console.log( 'empty blip with id: ' + received.blip );
+    else received.placeId = blip.place._id;
+    
+    db.collection('ReceivedBlip').update({ _id: received._id }, received, { safe: true }, callback);
+  })
+}
+
+db.collection('ReceivedBlip').find().toArray(function onGotReceivedBlips ( error, blips ) {
+  if ( error ) return done();
+  console.log( 'retreived ' + blips.length + ' blips' );
+  async.forEach(blips, update, done);
+});

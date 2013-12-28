@@ -1,0 +1,55 @@
+{
+  "name": "blipboard",
+  "subdomain": "blipboard-staging",
+  "version": "1.1.16-2",
+  "license": "BSD-2-Clause",
+  "engines": {
+    "node": "0.8.19",
+    "npm": "1.2.10"
+  },
+  "dependencies": {
+    "async": "0.2.5",
+    "express": "2.5.10",
+    "express-resource": "0.2.4",
+    "factual-api": "1.0.6",
+    "googlemaps": "0.1.7",
+    "http-auth": "1.2.3",
+    "s3": "0.0.5",
+    "loggly": "0.3.11",
+    "ntwitter": "0.5.0",
+    "moment": "1.7.2",
+    "mongoskin": "0.5.0",
+    "nodetime": "0.8.11",
+    "function-rate-limit": "0.0.1",
+    "restler": "https://github.com/berryboy/restler/tarball/eb33b68d5af6e18a92d818e07de9dfa39ab2056a",
+    "simplesets": "1.2.0",
+    "sprintf": "0.1.1",
+    "urban-airship": "0.2.4",
+    "winston": "0.6.2",
+    "winston-loggly": "0.6.0",
+    "optimist": "0.3.5",
+    "URIjs": "1.10.1"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "test": "make test"
+  },
+  "devDependencies": {
+    "nodeload": "0.4.0",
+    "should": "1.2.1",
+    "sinon": "1.6.0"
+  },
+  "env": {
+    "BLIPBOARD_NAME": "blipboard-staging",
+    "BLIPBOARD_MAX_REGION_SPAN": "10000",
+    "FACEBOOK_BLIPBOARD_ID": "fb-key-goes-here",
+    "FACEBOOK_BLIPBOARD_SECRET": "fb-secret-goes-here",
+    "LOGGLY_SUBDOMAIN": "blipboard",
+    "LOGGLY_URL": "loggly-url-here",
+    "MONGOHQ_URL": "mongo-url-goes-here",
+    "URBANAIRSHIP_API_KEY": "urban-airship-api-key",
+    "URBANAIRSHIP_MASTER_KEY": "urban-airship-master-key",
+    "URBANAIRSHIP_SECRET_KEY": "urban-airship-secret-key"
+  },
+  "optionalDependencies": {}
+}

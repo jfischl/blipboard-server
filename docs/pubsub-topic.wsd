@@ -1,0 +1,27 @@
+title Blipboard Pub/Sub Topic
+
+participant "Bob" as B
+participant "Blipboard" as BB
+participant "Darwin Cafe" as D
+participant "Charlie" as C
+
+note over B
+  Bob is interested in any messages
+  related to espresso
+end note
+B->BB: subscribe("topic:espresso")
+
+note over C,BB
+     Charlie publishes his message 
+     while near Darwin Cafe and tags
+     it with the topic "espresso"
+end note
+C->BB: publish "Great #espresso at Darwin Cafe"
+note over B,BB
+   1 month of time elapses, 
+   Bob is in South Park a few blocks from 
+   Darwin Cafe. He has not explicitly subscribed
+   to Darwin Cafe only to the topic:espresso
+end note
+B->BB: update-location(lat,lng)
+BB->B: notify("Great #espresso at Darwin Cafe")

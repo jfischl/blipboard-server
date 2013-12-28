@@ -1,0 +1,20 @@
+machine:
+  environment: 
+    MONGO_URL: mongodb://localhost:27017/blipboard
+    FACEBOOK_BLIPBOARD_ID: fb-id-goes-here
+    FACEBOOK_BLIPBOARD_SECRET: fb-secret-goes-here
+    BLIPBOARD_ERROR_LOG_STACK: true
+    BLIPBOARD_LOG_USER_ERRORS: true
+    URBANAIRSHIP_NAMESPACE: test
+
+deployment:
+  prod:
+    branch: master
+    heroku:
+      appname: blipboard-prod
+
+  staging:
+    branch: staging
+    heroku:
+      appname: blipboard-staging
+

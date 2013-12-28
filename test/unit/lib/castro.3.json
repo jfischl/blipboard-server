@@ -1,0 +1,58 @@
+[
+      {
+         "likes": 77,
+         "name": "Frapez",
+         "location": {
+            "street": "4092 18th St \u0040 Castro",
+            "city": "San Francisco",
+            "state": "CA",
+            "country": "United States",
+            "zip": "94114",
+            "latitude": 37.760670527731,
+            "longitude": -122.43452952526
+         },
+         "id": "59977938162"
+      },
+      {
+         "likes": 31,
+         "name": "Cocomo's",
+         "location": {
+            "city": "San Francisco",
+            "state": "CA",
+            "country": "United States",
+            "latitude": 37.760306446766,
+            "longitude": -122.43492016019
+         },
+         "id": "181950188482714"
+      },
+      {
+         "likes": 234,
+         "name": "Whatever Store",
+         "location": {
+            "street": "548 Castro Street ",
+            "city": "San Francisco",
+            "state": "CA",
+            "country": "United States",
+            "zip": "94114",
+            "latitude": 37.760365409447,
+            "longitude": -122.43497849804
+         },
+         "id": "278440702329"
+      },
+      {
+         "likes": 161,
+         "name": "Bryan Roberts Salon & Color Bar",
+         "location": {
+            "street": "561 Castro Street",
+            "city": "San Francisco",
+            "state": "CA",
+            "country": "United States",
+            "zip": "94114",
+            "latitude": 37.759960729748,
+            "longitude": -122.43478361377
+         },
+         "id": "113901868687810"
+      }
+]
+
+

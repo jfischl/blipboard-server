@@ -1,0 +1,34 @@
+#!/usr/bin/env node
+
+var async = require('async');
+var db = require('mongoskin').db(process.env.MONGOHQ_URL);
+
+var fbIds = process.argv.slice(2);
+
+console.log( '\033[1mAdding users with the following facebook ids to the developers list:\033[0m' );
+console.log( fbIds.join(', ') );
+console.log( 'Please wait...' );
+
+var selector = {
+  'facebook.id': { $in: fbIds },
+  'type': 'user'
+}
+
+var document = {
+  $set: { 'isDeveloper': false }
+}
+
+var options = {
+  safe: true,
+  multi: true
+}
+
+db.collection('Channel').update(selector, document, options, function onUpdated ( error ) {
+  db.close();
+  
+  if ( error ) {
+    console.log( '\033[1;31mSomething went wrong: ' + error + '\033[0m' );
+  }
+ 
+  console.log( '\033[1mDone\033[0m' );
+});

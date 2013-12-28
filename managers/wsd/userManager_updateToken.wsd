@@ -1,0 +1,22 @@
+client -> server: create-anonymous-account
+server -> client: 200(a)
+
+client -> server: associate-facebook (a,fb1,basic)
+server -> client: 200(a) 
+
+client -> server: associate-facebook (a,fb1,oauth)
+server -> client: 200(a) 
+
+
+client -> server: create-anonymous-account
+server -> client: 200(a)
+
+client -> server: associate-facebook (a,fb1,basic)
+server -> client: 200(a) 
+
+client -> server: create-anonymous-account
+server -> client: 200(b)
+
+client -> server: associate-facebook (b,fb1,basic)
+server -> client: 301(b) 
+

@@ -1,0 +1,13 @@
+channelController-> placeManager: search
+placeManager -> tileManager: getLastFBUpdateTime
+placeManager -> facebook: getPlaces
+placeManager -> placeManager: filterInTile
+
+placeManager -> Channels: insert(new-channels) 
+placeManager -> channelController: callback(results)
+
+placeManager -> ChannelEvents: rankChange
+ChannelEvents -> placeManager: onListenerCountChange
+placeManager -> ChannelRankManager: update
+
+placeManager -> tileManager: update

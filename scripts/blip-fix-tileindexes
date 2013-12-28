@@ -1,0 +1,62 @@
+#!/usr/bin/env node
+var assert = require('assert');
+var async = require('async');
+var winston = require('winston');
+
+var mongo = require('../lib/mongo');
+var js = require('../lib/javascript');
+
+async.series({
+  mongo: function(callback) {
+    mongo.initialize(callback);
+  },
+  fixPlaces: function(callback) { 
+    mongo.channels.find({type: 'place', 'location.tileIndex':/^..................$/}).toArray(function(error, places) { 
+      console.log("Found " + places.length + " places");
+      async.eachSeries(places, function(place, callback) { 
+        if (place.location.tileIndex.length === 18) { 
+          console.log("Fixing place: " + place.name);
+          mongo.channels.update({_id: place._id}, {$set: {'location.tileIndex': place.location.tileIndex.slice(0,16)}}, callback);
+        }
+        else {
+          callback();
+        }
+      }, callback);
+    });
+  },
+  fixBlips: function(callback) { 
+    mongo.blips.find({'place.location.tileIndex':/^..................$/}).toArray(function(error, blips) { 
+      console.log("Found " + blips.length + " blips");
+      async.eachSeries(blips, function(blip, callback) { 
+        if (blip.place.location.tileIndex.length === 18) { 
+          console.log("Fixing blip: " + blip.place.name);
+          mongo.blips.update({_id: blip._id}, {$set: {'place.location.tileIndex': blip.place.location.tileIndex.slice(0,16)}}, callback);
+        }
+        else {
+          callback();
+        }
+      }, callback);
+    });
+  }, 
+  fixReceivedBlips: function(callback) { 
+    mongo.receivedBlips.find({tileIndex:/^..................$/}).toArray(function(error, rblips) { 
+      console.log("Found " + rblips.length + " received blips");
+      async.eachSeries(rblips, function(rblip, callback) { 
+        if (rblip.tileIndex.length === 18) { 
+          console.log("Fixing received blip: " + rblip._id);
+          mongo.receivedBlips.update({_id: rblip._id}, {$set: {'tileIndex': rblip.tileIndex.slice(0,16)}}, callback);
+        }
+        else {
+          callback();
+        }
+      }, callback);
+    });
+  }
+}, function(error, results) { 
+  if (error) { 
+    console.log("Failed:"+js.pp(error));
+  }
+  mongo.close();
+});
+
+

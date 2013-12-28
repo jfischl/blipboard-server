@@ -1,0 +1,21 @@
+title User Tunes Out (Unlistens) to a Channel
+channelController->listenNetworkManager:listen
+listenNetworkManager->channels:find
+
+note over listenNetworkManager,channels: 
+     validate channel ids exist 
+end note
+
+opt in parallel 
+    listenNetworkManager->channelListeners:remove
+    listenNetworkManager->channelListensTos:remove
+end 
+
+alt documents removed
+    listenNetworkManager->channelController:callback(null,true)
+    listenNetworkManager->channelEvents:removedChannelListener
+else no docs removed
+     listenNetworkManager->channelController:callback(null,false)
+else db is inconsistent 
+     listenNetworkManager->channelEvents:listenNetworkInvalid
+end 

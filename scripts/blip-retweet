@@ -1,0 +1,38 @@
+#!/usr/bin/env node
+
+// no arguments - retweet all
+
+var async = require('async');
+
+var mongo = require('../lib/mongo');
+var twitter = require('../lib/twitter');
+
+mongo.initialize(function mongoIsInitialized ( error ) {
+  var count = 0, q = process.argv[2], criterion = { }
+
+  if ( q ) criterion = { $or: [ { 'id_str' : q }, { 'text' : RegExp(q, 'i') } ] }
+
+  console.log('Pulling tweets');
+
+  mongo.tweets.find(criterion).toArray(function gotTweets ( error, tweets ) {
+    console.log('Found ' + tweets.length + ' tweets');
+
+    var broadcast = function broadcast ( tweet, callback ) {
+      twitter.broadcast(tweet, function onBroadcast ( error ) {
+        if ( !error ) {
+          mongo.tweets.remove(tweet, function ( ) { });
+          count += 1;
+        }
+
+        console.log(error);
+
+        callback();
+      });
+    }
+
+    async.forEach(tweets, broadcast, function ( ) {
+      console.log('Done: broadcast ' + count + ' tweets');
+      process.exit();
+    });
+  });
+});

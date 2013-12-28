@@ -1,0 +1,2 @@
+#!/bin/sh
+heroku addons:open --app blipboard-prod papertrail

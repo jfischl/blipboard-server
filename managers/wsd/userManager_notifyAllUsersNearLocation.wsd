@@ -1,0 +1,5 @@
+title notify all users near a location
+userManager->userManager:usersAtTile
+userManager->channels:findItems
+userManager->blipManager:countIncomingBlipsAtTileIndex
+blipManager->incomingBlipQueues:findOne

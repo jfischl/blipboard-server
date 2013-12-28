@@ -1,0 +1,50 @@
+#!/usr/bin/python
+import urllib
+import json
+import sys
+from pprint import pprint
+
+def isLatLng(text):
+    splitText = text.split(",")
+    
+    if len(splitText)==2:
+        try:
+            maybeLat,maybeLng = splitText
+            lat,lng = float(maybeLat),float(maybeLng)
+            return True
+        except:
+            pass
+
+def getGeocodeResult( text ):
+    if isLatLng(text):
+        print(text)
+        exit(0)
+        
+    request = {}
+    request["address"] = text
+    request["sensor"] = "false"
+
+    url = urllib.urlencode(request)
+    f = urllib.urlopen("http://maps.googleapis.com/maps/api/geocode/json?"+url)
+    http_result = json.load(f)
+    f.close()
+    results = http_result['results']
+    if len(results)>1:
+        print("Ambiguous address")
+        exit(1)
+    elif len(results)==0:
+        print("Cannot find address: '%s'" % text)
+        exit(1)
+    else:
+        location = results[0]['geometry']['location']
+        print("%f,%f" % (location['lat'],
+                                    location['lng']))
+        exit(0)
+
+if len(sys.argv)<2:
+    print "Finds the lat,lng coordinates of an address"
+    print "usage: geocode.py \"123 main st., anytown, ca"
+    quit(1)
+else:
+    getGeocodeResult(sys.argv[1])
+    

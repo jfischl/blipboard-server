@@ -1,0 +1,90 @@
+#!/usr/bin/env node
+var URI = require('URIjs');
+var async = require('async');
+var assert = require('assert');
+var js = require('../lib/javascript');
+var mongo = require('../lib/mongo');
+var channelManager = require('../managers/channelManager');
+var classOf = require('../lib/javascript').classOf;
+
+mongo.initialize(function (error) 
+{
+  if (error) {
+    console.log(js.pp(error));
+    process.exit(-1);
+  }
+  else {
+    var c = 0;
+    mongo.channels.find({type: 'place', ignore: {$ne: true}, blacklisted: {$ne: true}, factual:{$exists: true}}).toArray(initialize);
+
+    function copy(channel, callback) { 
+      var now = new Date();
+      var crosswalk = channel.factual;
+      if (crosswalk === "unresolved") { 
+        var factual = {unresolved: true};
+        mongo.channels.update({_id: channel._id}, {$set: {'factual': factual}}, callback);
+      }
+      else if (classOf(crosswalk) === Array) {
+        //console.log(channel._id);
+        //console.log(js.pp(crosswalk));
+        
+        if (crosswalk.length > 0 && crosswalk[0].factual_id ) { 
+          var factual = { 
+            id: crosswalk[0].factual_id,
+            crosswalk: crosswalk,
+            lastRefresh: now
+          }
+          mongo.channels.update({_id: channel._id}, {$set: {'factual': factual}}, function(error, result) { 
+            if (error && error.code === 11001) { 
+              console.log("Duplicate factual id " + factual.id + " for "+ channel.name + "(" + channel._id + ")");
+              mongo.channels.findOne({'factual.id': factual.id}, function(error, existing) {
+                if (error) { 
+                  callback(error);
+                }
+                else {
+                  channelManager.mergePlaceChannels(existing._id, channel._id, callback);
+                }
+              });
+            }
+            else {
+              callback(error, result);
+            }
+          });
+        }
+        else {
+          //console.log("bad channel " + js.pp(channel));
+          mongo.channels.update({_id: channel._id}, {$unset: {'factual': true}}, callback);
+        }
+      }
+      else {
+        process.nextTick(callback);
+      }
+    }
+    
+    function initialize(error, channels) { 
+      if (error) { 
+        console.log("error: " + error);
+        done();
+      }
+      else if (channels && channels.length) { 
+        console.log("updating " + channels.length + " channels");
+        async.eachLimit(channels, 1, copy, done);
+      }
+      else {
+        console.log("no channels");
+      }
+    }
+
+    function done(error) {
+      if (error) { 
+        console.log("error: " + js.pp(error));
+      }
+      else {
+        console.log("done");
+      }
+
+      mongo.close();
+      process.exit();
+    }
+  }
+});

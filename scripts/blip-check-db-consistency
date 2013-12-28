@@ -1,0 +1,229 @@
+#!/usr/bin/env node
+
+var assert = require('assert');
+var async = require('async');
+var sprintf = require('sprintf').sprintf;
+var mongo = require('../lib/mongo');
+var js = require('../lib/javascript');
+
+mongo.initialize(function (error) 
+                 {
+                   if (error) {
+                     console.log(js.pp(error));
+                     process.exit(-1);
+                   }
+                   else {
+                     async.series(
+                       [
+                         function checkChannels (callback) { 
+                           console.log( '\033[1mChecking channel listener counts\033[0m' );
+                           console.log( 'Retrieving channels' );
+                           
+                           mongo.channels.find().toArray(function onChannelsReady ( error, channels ) {
+                             console.log( error || 'retrieved ' + channels.length + ' channels' );
+                             if (!error) { 
+                               channels.forEach(function (channel) { 
+                                 mongo.channelListeners.find({channel:channel._id}).count(function (error, count) { 
+                                   if (error) {
+                                     console.log(error);
+                                     callback(error);
+                                   }
+                                   else if (!channel.stats) { 
+                                     console.log("missing stats: " + js.pp(channel));
+                                   }
+                                   else if (count != channel.stats.followers) { 
+                                     assert (count !== undefined);
+                                     assert (channel.stats.followers !== undefined);
+                                     console.log(sprintf("%s (%s) Channel followers (%d) doesn't match ChannelListeners (%d).",
+                                                         channel._id, 
+                                                         channel.name, 
+                                                         channel.stats.followers,
+                                                         count));
+                                   }
+                                 });
+                               });
+                             }
+                             callback();
+                           });
+                         }, 
+
+                         function checkBlipsReferences ( callback ) {
+                           console.log( '\033[1mChecking blip references to users and places\033[0m' );
+                           console.log( 'Retrieving blips' );
+
+                           mongo.blips.find().toArray(function onChannelRanksReady ( error, blips ) {
+                             console.log( error || 'retrieved ' + blips.length + ' blips' );
+                             console.log( 'looking for broken references' );
+
+                             var placeCount = 0, userCount = 0, brokenPlaces = 0, brokenUsers = 0, placeReferences = { }, userReferences = { }
+                             blips.forEach(function ( blip ) {
+                               placeCount++; userCount++;
+
+                               var placeId = String(blip.place._id), userId = String(blip.author._id);
+                               placeReferences[placeId] = true, userReferences[userId] = true;
+
+                               mongo.channels.find({ _id: blip.place._id }).toArray(function onFoundReference ( error, places ) {
+                                 placeCount--;
+
+                                 if ( !error && places && places.length == 1 ) placeReferences[String(places[0]._id)] = false; else brokenPlaces++;
+
+                                 if ( placeCount == 0 ) {
+                                   if ( brokenPlaces == 0 ) console.log( '\033[1;32mBlips are consistent with places\033[0m' );
+                                   else {
+                                     console.log( '\033[1;31mFound ' + brokenPlaces + ' broken references to places from blips\033[0m' );
+
+                                     for ( var i in placeReferences ) {
+                                       if ( placeReferences[i] ) console.log('Broken place reference from a blip: ' + i);
+                                     }
+                                   }
+                                 }
+
+                                 if ( placeCount == 0 && userCount == 0 ) callback ( );
+                               });
+
+                               mongo.channels.find({ _id: blip.author._id }).toArray(function onFoundReference ( error, users ) {
+                                 userCount--;
+
+                                 if ( !error && users && users.length == 1 ) userReferences[String(users[0]._id)] = false; else brokenUsers++;
+
+                                 if ( userCount == 0 ) {
+                                   if ( brokenUsers == 0 ) console.log( '\033[1;32mBlips are consistent with users\033[0m' );
+                                   else {
+                                     console.log( '\033[1;31mFound ' + brokenUsers + ' broken references to users from blips\033[0m' );
+
+                                     for ( var i in userReferences ) {
+                                       if ( userReferences[i] ) console.log('Broken user reference from a blip: ' + i);
+                                     }
+                                   }
+                                 }
+
+                                 if ( placeCount == 0 && userCount == 0 ) callback ( );
+                               });
+                             });
+                           });
+                         },
+                         function checkReceivedBlipReferences ( callback ) {
+                           console.log( '\033[1mChecking received blip references to channels and blips\033[0m' );
+                           console.log( 'Retrieving received blips' );
+
+                           mongo.receivedBlips.find().toArray(function onChannelRanksReady ( error, received ) {
+                             console.log( error || 'retrieved ' + received.length + ' received blips' );
+                             console.log( 'looking for broken references' );
+
+                             var blipCount = 0, userCount = 0, authorCount = 0, brokenBlips = 0, brokenUsers = 0, brokenAuthors = 0;
+                             var blipReferences = { }, userReferences = { }, authorReferences = { }
+
+                             received.forEach(function ( rblip ) {
+                               blipCount++; userCount++; authorCount++;
+
+                               var blipId = String(rblip.blip), userId = String(rblip.user), authorId = String(rblip.author);
+                               blipReferences[blipId] = true, userReferences[userId] = true, authorReferences[authorId] = true;
+
+                               mongo.blips.find({ _id: rblip.blip }).toArray(function onFoundReference ( error, blips ) {
+                                 blipCount--;
+
+                                 if ( !error && blips && blips.length == 1 ) blipReferences[String(blips[0]._id)] = false; else brokenBlips++;
+
+                                 if ( blipCount == 0 ) {
+                                   if ( brokenBlips == 0 ) console.log( '\033[1;32mReceived blips are consistent with blips\033[0m' );
+                                   else {
+                                     console.log( '\033[1;31mFound ' + brokenBlips + ' broken references to blips from received blips\033[0m' );
+
+                                     for ( var i in blipReferences ) {
+                                       if ( blipReferences[i] ) console.log('Broken blip reference from a received blip: ' + i);
+                                     }
+                                   }
+                                 }
+
+                                 if ( blipCount == 0 && userCount == 0 && authorCount == 0 ) callback ( );
+                               });
+
+                               mongo.channels.find({ _id: rblip.user }).toArray(function onFoundReference ( error, channels ) {
+                                 userCount--;
+
+                                 if ( !error && channels && channels.length == 1 ) userReferences[String(channels[0]._id)] = false; else brokenUsers++;
+
+                                 if ( userCount == 0 ) {
+                                   if ( brokenUsers == 0 ) console.log( '\033[1;32mReceived blips are consistent with user channels\033[0m' );
+                                   else {
+                                     console.log( '\033[1;31mFound ' + brokenUsers + ' broken references to user channels from received blips\033[0m' );
+
+                                     for ( var i in userReferences ) {
+                                       if ( userReferences[i] ) console.log('Broken user channel reference from a received blip: ' + i);
+                                     }
+                                   }
+                                 }
+
+                                 if ( blipCount == 0 && userCount == 0 && authorCount == 0 ) callback ( );
+                               });
+                               mongo.channels.find({ _id: rblip.author }).toArray(function onFoundReference ( error, channels ) {
+                                 authorCount--;
+
+                                 if ( !error && channels && channels.length == 1 ) authorReferences[String(channels[0]._id)] = false; else brokenAuthors++;
+
+                                 if ( authorCount == 0 ) {
+                                   if ( brokenAuthors == 0 ) console.log( '\033[1;32mReceived blips are consistent with author channels\033[0m' );
+                                   else {
+                                     console.log( '\033[1;31mFound ' + brokenAuthors + ' broken references to author channels from received blips\033[0m' );
+
+                                     for ( var i in authorReferences ) {
+                                       if ( authorReferences[i] ) console.log('Broken author channel reference from a received blip: ' + i);
+                                     }
+                                   }
+                                 }
+
+                                 if ( blipCount == 0 && userCount == 0 && authorCount == 0 ) callback ( );
+                               });
+                             });
+                           });
+                         },
+                         function checkTuneinConnections ( callback ) {
+                           console.log( '\033[1mChecking tunein connections\033[0m' );
+                           console.log( 'Retrieving channel listeners' );
+
+                           mongo.channelListeners.find().toArray(function onListenersReady ( error, listeners ) {
+                             console.log( error || 'retrieved ' + listeners.length + ' listeners' );
+                             console.log( 'Retrieving channel listensTos' );
+
+                             mongo.channelListensTos.find().toArray(function onListensTosReady ( error, listensTos ) {
+                               console.log( error || 'retrieved ' + listensTos.length + ' listensTos' );
+
+                               var connection = { }
+                               listeners.forEach(function ( pair ) {
+                                 var id = pair.listener + ' -> ' + pair.channel;
+                                 connection[id] = (connection[id] || 0) + 1;
+                               });
+                               listensTos.forEach(function ( pair ) {
+                                 var id = pair.channel + ' -> ' + pair.listensTo;
+                                 connection[id] = (connection[id] || 0) - 1;
+                               });
+
+                               var problems = 0;
+                               for ( var i in connection ) problems += Math.abs(connection[i]);
+
+                               if ( problems != 0 ) {
+                                 console.log( '\033[1;31mFound ' + problems + ' connection problem' + (problems > 1 ? 's' : '') + '\033[0m' );
+
+                                 for ( var i in connection ) {
+                                   var v = connection[i];
+                                   if ( v != 0 ) {
+                                     console.log( i + ' connection appears ' + Math.abs(v) + ' time' + (v > 1 ? 's' : '') + ' in Channel' + (v > 0 ? 'Listener' : 'ListensTo')  );
+                                   }
+                                 }
+                               }
+                               else {
+                                 console.log( '\033[1;32mChannel tunein connections are consistent\033[0m' );
+                               }
+
+                               callback();
+                             });
+                           });
+                         }
+                       ],
+                       function ( ) {
+                         mongo.close();
+                         console.log( 'Done' );
+                       }
+                     );
+                   }
+                 });

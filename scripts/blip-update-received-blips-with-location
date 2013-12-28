@@ -1,0 +1,42 @@
+#!/usr/bin/env node
+var assert = require('assert');
+var mongo = require('../lib/mongo');
+var config = require('../config');
+var js = require('../lib/javascript');
+var async = require('async');
+var Tile = require('../lib/tile').Tile;
+
+mongo.initialize(function () {
+  mongo.join(mongo.receivedBlips.find({}), //'location':{$exists:false}}), 
+             {blip:'_id'},
+             {},
+             mongo.blips,
+             {fields: ['_id','place.location.latitude','place.location.longitude','place.location.tileIndex']},
+             function (error, blips) { 
+               async.forEachSeries(blips,function (blip,callback) {
+                 var t = new Tile(blip.place.location.tileIndex);
+                 assert(t.zoom === config.MONGO.tileZoomLevel);
+                 mongo.receivedBlips.update({blip: blip._id},
+                                            {$set: {'location.latitude':blip.place.location.latitude,
+                                                    'location.longitude':blip.place.location.longitude,
+                                                    'tileIndex':blip.place.location.tileIndex}},
+                                            {safe:true,multi:true},
+                                            function (error,result) {
+                                              if (error) { console.log("error: " + error); }
+                                              console.log("Updated location for "
+                                                          + blip._id 
+                                                          + " zoom=" 
+                                                          + blip.place.location.tileIndex 
+                                                          + " result=" 
+                                                          + result) 
+                                              callback(error,result);
+                                            });
+               }, function done(error) {
+                 mongo.close(function () { 
+                   console.log("finished");
+                 });
+               });
+             });
+});
+
+

@@ -1,0 +1,29 @@
+#!/usr/bin/env node
+var Tile = require('../lib/tile').Tile;
+var js = require('../lib/javascript');
+var tiles = [];
+
+function usage(e) 
+{ 
+  console.log("prints a google maps url which shows tiles (maximum of about 6 tiles)");
+  console.log("usage: blip-show-tiles {tileIndex} {tileIndex2} ...  # prints a url");
+  console.log("       open `blip-show-tiles {tileIndex} {tileIndex2}` # opens browser with static map");
+  if (e) console.log("Error:"+js.pp(e));
+}
+
+
+try {
+  if (process.argv.length >= 2) { 
+    var indexes = process.argv.splice(2);
+    var tiles = indexes.map(function(index) { return new Tile(index); });
+    var parentTile = Tile.parentTile(tiles);      
+    //console.log(js.pp(parentTile));
+    console.log(Tile.googleStaticMapFromTiles(tiles,"640x480",parentTile.zoom));
+  }
+  else {
+    usage();
+  }
+}
+catch (e) {
+  usage(e);
+}

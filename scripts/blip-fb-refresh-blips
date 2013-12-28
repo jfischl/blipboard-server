@@ -1,0 +1,29 @@
+#!/usr/bin/env node
+var mongo = require('../lib/mongo');
+var async = require('async');
+var blipRefreshService = require('../managers/blipRefreshService');
+function done(callback) {
+  function doneCallback(error,channel) { console.log(error||result._id); callback(); }
+};
+mongo.initialize(function (error) {
+  mongo.channels.findItems({facebook:{$exists:true},type:'place'}, function(error,fbPlaceChannels) {
+    if (error) {
+      console.log("Error "+JSON.stringify(error,null,2));
+    }
+    else {
+      console.log("Processing "+fbPlaceChannels.length+" place channels");
+      var workers = fbPlaceChannels.map(function (channel) {
+        return function (callback) { 
+          blipRefreshService.loadBlips(channel._id, function (error,result) {
+            console.log("Loaded blips for "+channel.name);
+            callback(error, result);
+          }); 
+        };
+      });
+      async.series(workers,function () {
+        console.log("done"); process.exit(); 
+      });
+    }
+  });
+    
+});

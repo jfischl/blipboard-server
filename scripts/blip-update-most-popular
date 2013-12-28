@@ -1,0 +1,60 @@
+#!/usr/bin/env node
+
+console.log("Not properly implemented. Exiting");
+process.exit(-1);
+
+var assert = require('assert');
+var sprintf = require('sprintf').sprintf;
+var async = require('async');
+
+var mongo = require('../lib/mongo');
+var channelManager = require('../managers/channelManager');
+var js = require('../lib/javascript');
+
+var processPlace = function processPlace(place, callback) {
+  mongo.blips.findOne({'place._id': place._id}, 
+                      {_id:1, popularity:1, 'place._id':1}, // fields
+                      {sort:[['popularity', 'desc']]},
+                      function(error, blip) { 
+                        if (error) {
+                          callback(error);
+                        }
+                        else if (!blip) { 
+                          callback();
+                        }
+                        else {
+                          channelManager.updateMostPopularBlip(blip, callback);
+                        }
+                      });
+};
+
+mongo.initialize(function(error) { 
+  if (error) {
+    console.log("Failed to initialize");
+  }
+  else {
+    var allPlacesQueued = false;
+    var queue = async.queue(processPlace, 25);
+    queue.drain = function() { 
+      if (allPlacesQueued) {
+        console.log("done.");
+        mongo.close();
+        process.exit();
+      }
+    }
+    
+    mongo.channels.findEach({type:mongo.channelType.place},function (error,place) {
+      if (error) {
+        console.log("*************mongo error: " + js.pp(error));
+      }
+      else {
+        if (place) {
+          queue.push(place);
+        }
+        else {
+          allPlacesQueued = true;
+        }
+      }
+    });
+  }
+});

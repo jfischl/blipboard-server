@@ -1,0 +1,26 @@
+#!/bin/bash
+scriptDir=$(cd `dirname $0` && pwd);
+if [ -f "$scriptDir/.user.login" ]; then
+    userOption="--user `cat $scriptDir/.user.login`"
+else
+    userOption=""
+fi
+
+while getopts s:u:h name
+do	case "$name" in
+        u)      userOption="--user $OPTARG";;
+	h)	echo "usage: bgetblipstream.sh [-u username:password] [channelId]"
+                echo "where server=url or one of production,staging,localhost"
+		exit 1;;
+        s)      server="$OPTARG";;
+	esac
+done
+shift $(($OPTIND-1))
+
+domain=`$scriptDir/blip-resolve-server-domain "$server"`
+if [ -z "$1" ]; then
+    channelid="me"
+else
+    channelid="$1"
+fi
+curl "$domain/channels/${channelid}/stream.txt" $userOption

@@ -1,0 +1,2 @@
+title channelRankManager.update changes the weight of a channel
+channelRankManager->mongo.channelRanks:update

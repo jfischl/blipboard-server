@@ -1,0 +1,41 @@
+#!/usr/bin/env node
+
+var async = require('async');
+var db = require('mongoskin').db(process.env.MONGOHQ_URL);
+
+db.collectionNames(function onReady ( error, collections ) {
+  var worker = function worker ( collection, callback ) {
+    var name = collection.name.split('.', 2).pop();
+
+    if ( name.match(/^system.*/) ) return callback ();
+    else if ( name == 'Channel' ) {
+      console.log( 'removing non user channels ...' );
+      db.collection(name).remove({ 'type': { $ne: 'user' } }, function onDone ( error ) {
+        if ( error ) return callback(error);
+
+        console.log( 'removed non user channels' );
+
+        callback();
+      });
+    }
+    else {
+      console.log( 'dropping "' + name + '" ...' );
+
+      db.collection(name).drop(function onDone ( error ) {
+        if ( error ) return callback(error);
+
+        console.log( 'dropped "' + name + '"' );
+
+        callback();
+      });
+    }
+  }
+
+  var finalCallback = function finalCallback ( error ) {
+    if ( error ) console.log( '\033[1,31mSomething went wrong... ' + error + '\033[0m' );
+    else console.log( '\033[1mDone\033[0m' );
+    db.close();
+  }
+
+  async.forEach(collections, worker, finalCallback);
+});

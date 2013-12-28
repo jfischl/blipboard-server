@@ -1,0 +1,99 @@
+[ 
+{
+    "identifier": "drinks",
+    "parentIdentifier": null,
+    "name": "Drinks",
+    "description": "Tasty cocktails and whatnot",
+    "pictureFile": "images/noun_project_6906.png",
+    "pictureFile2x": "images/noun_project_6906@2x.png" 
+},
+{
+    "identifier": "coffee",
+    "parentIdentifier": null,
+    "name": "Coffee",
+    "description": "Coffee and Tea",
+    "pictureFile": "images/noun_project_16.png",
+    "pictureFile2x": "images/noun_project_16@2x.png" 
+},
+{
+    "identifier": "culture",
+    "parentIdentifier": null,
+    "name": "Culture",
+    "description": "Culture",
+    "pictureFile": "images/noun_project_607.png",
+    "pictureFile2x": "images/noun_project_607@2x.png" 
+},
+{
+    "identifier": "entertainment",
+    "parentIdentifier": null,
+    "name": "Entertainment",
+    "description": "Entertainment",
+    "pictureFile": "images/noun_project_3769.png",
+    "pictureFile2x": "images/noun_project_3769@2x.png" 
+},
+{
+    "identifier": "health",
+    "parentIdentifier": null,
+    "name": "Health & Fitness",
+    "description": "Health & Fitness",
+    "pictureFile": "images/noun_project_777.png",
+    "pictureFile2x": "images/noun_project_777@2x.png" 
+},
+{
+    "identifier": "food",
+    "parentIdentifier": null,
+    "name": "Food",
+    "description": "Food",
+    "pictureFile": "images/noun_project_33.png",
+    "pictureFile2x": "images/noun_project_33@2x.png" 
+},
+{
+    "identifier": "music",
+    "parentIdentifier": null,
+    "name": "Music",
+    "description": "Music",
+    "pictureFile": "images/noun_project_928.png",
+    "pictureFile2x": "images/noun_project_928@2x.png" 
+},
+{
+    "identifier": "nature",
+    "parentIdentifier": null,
+    "name": "Nature",
+    "description": "Nature",
+    "pictureFile": "images/noun_project_1535.png",
+    "pictureFile2x": "images/noun_project_1535@2x.png" 
+},
+{
+    "identifier": "nightlife",
+    "parentIdentifier": null,
+    "name": "Nightlife",
+    "description": "Nightlife",
+    "pictureFile": "images/noun_project_2852.png",
+    "pictureFile2x": "images/noun_project_2852@2x.png" 
+},
+{
+    "identifier": "shopping",
+    "parentIdentifier": null,
+    "name": "Shopping",
+    "description": "Shopping",
+    "pictureFile": "images/noun_project_5734.png",
+    "pictureFile2x": "images/noun_project_5734@2x.png" 
+},
+{
+    "identifier": "sports",
+    "parentIdentifier": null,
+    "name": "Sports",
+    "description": "Sports",
+    "pictureFile": "images/noun_project_8871.png",
+    "pictureFile2x": "images/noun_project_8871@2x.png" 
+},
+{
+    "identifier": "kids",
+    "parentIdentifier": null,
+    "name": "Kids",
+    "description": "Kids",
+    "pictureFile": "images/noun_project_4283.png",
+    "pictureFile2x": "images/noun_project_4283@2x.png" 
+}
+]
+

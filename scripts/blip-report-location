@@ -1,0 +1,29 @@
+#!/bin/bash
+scriptDir=$(cd `dirname $0` && pwd);
+if [ -f "$scriptDir/.user.login" ]; then
+    userOption="--user `cat $scriptDir/.user.login`"
+else
+    userOption=""
+fi
+
+function usage() {
+    echo "usage: breportlocation.sh [-u username:password] [-s server] latitude,longitude"
+    echo "where server=url or one of production,staging,localhost"
+    exit 1
+}
+
+while getopts s:u:h name
+do	case "$name" in
+        u)      userOption="--user $OPTARG";;
+        s)      server="$OPTARG";;
+	h)	usage;;
+	esac
+done
+shift $(($OPTIND-1))
+
+domain=`$scriptDir/bresolveserverdomain.sh "$server"`
+center="$1"
+if [ -z "$center" ]; then
+    usage
+fi
+curl "$domain/me/currentLocation.txt" -d "latlng=$center" $userOption

@@ -1,0 +1,66 @@
+#!/usr/bin/env node
+var async = require('async');
+var assert = require('assert');
+
+var blipManager = require('../managers/blipManager');
+var channelType = require('../config').MONGO.channelType;
+var js = require('../lib/javascript');
+var mongo = require('../lib/mongo');
+
+
+var blacklisted=0;
+mongo.initialize(function (error) 
+{
+  if (error) {
+    console.log(js.pp(error));
+    process.exit(-1);
+  }
+  else {
+    var allPlacesQueued = false;
+    function update(blip, callback) { 
+      if (blip.effectiveDate && blip.effectiveDate.getTime() === 0) { 
+        blip.effectiveDate = undefined;
+      }
+
+      if (blip.author.type == channelType.place && !blip.effectiveDate) { 
+        blip.blacklisted = true;
+        blacklisted++;
+      }
+
+      blipManager.evaluateEffectiveDate(blip);
+      console.log(blip._id + " eff=" + blip.effectiveDate + " exp=" + blip.expiryTime + " blacklisted=" + blip.blacklisted);
+      mongo.blips.update({_id:blip._id}, 
+                         {$set:{effectiveDate:blip.effectiveDate,
+                                expiryTime: blip.expiryTime,
+                                blacklisted: blip.blacklisted}},
+                         {safe:true},
+                         callback);
+    }
+    
+    var queue = async.queue(update, 25);
+    queue.drain = function() { 
+      if (allPlacesQueued) { 
+        console.log("done. blacklisted=" + blacklisted);
+        mongo.close();
+        process.exit();
+      }
+    }
+    mongo.blips.findEach({}, function(error, blip) { 
+      if (!error) {
+        if (blip) { 
+          queue.push(blip);
+        }
+        else {
+          console.log("*************************");
+          allPlacesQueued = true;
+          if (queue.length() === 0) { 
+            // without this, the queue may be empty before allPlacesQueued is set true
+            console.log("done. blacklisted=" + blacklisted);
+            mongo.close();
+            process.exit();
+          }
+        }
+      }
+    });
+  }
+});

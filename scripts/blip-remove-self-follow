@@ -1,0 +1,40 @@
+#!/usr/bin/env node
+var URI = require('URIjs');
+var async = require('async');
+var assert = require('assert');
+var js = require('../lib/javascript');
+var mongo = require('../lib/mongo');
+var listenNetworkManager = require('../managers/listenNetworkManager');
+
+mongo.initialize(function (error) 
+{
+  if (error) {
+    console.log(js.pp(error));
+    process.exit(-1);
+  }
+  else {
+    mongo.channels.find({type:'user'}).toArray(initialize);
+    function initialize(error, channels) { 
+      if (error) { 
+        console.log("error: " + error);
+        done();
+      }
+      else if (channels) { 
+        async.eachLimit(channels, 25, update, done);
+      }
+      else {
+        console.log("no channels");
+      }
+    }
+
+    function update(channel, callback) { 
+      listenNetworkManager.unlisten(channel._id, channel._id, callback);
+    }
+    
+    function done() {
+      console.log("done.");
+      mongo.close();
+      process.exit();
+    }
+  }
+});

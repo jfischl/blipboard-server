@@ -1,0 +1,3 @@
+title Find listeners of a channel
+channelController->listenNetworkManager:findListeners
+listenNetworkManager->channelListeners:find

@@ -1,0 +1,50 @@
+#!/usr/bin/env node
+var mongo = require('../lib/mongo');
+var js = require('../lib/javascript');
+var async = require('async');
+var blipManager = require('../managers/blipManager');
+
+function usage() {
+  console.log("Usage:\nblip-delete-old-place-blips...\nCareful!!! This permanently and irretrievably deletes >1 week old place blips.");
+}
+
+mongo.initialize(function (error) {
+  if (error) {
+    console.log("Database error: " + js.pp(error));
+  }
+  else {
+    var blipIds;
+    var criterion;
+    var now = new Date();
+    var oneWeekAgo = new Date();
+    oneWeekAgo.setDate(now.getDate()-7);
+    try {
+      mongo.blips.findItems(
+        {'createdTime':{$lte:oneWeekAgo},
+         'author.type':'place'},
+        {_id:1},
+        function (error,result) {
+          if (error) {
+            console.log("Error: "+js.pp(error));
+            mongo.db.close();
+            process.exit();
+          }
+          else {
+            blipIds = result.map(function (bdoc) { return bdoc._id; });
+            console.log("Deleting "+blipIds.length);
+            blipManager.deleteBlips(blipIds, function(error, result) { 
+              if (error) {
+                console.log("Error: " + js.pp(error));
+              }
+              mongo.db.close();
+              process.exit();
+            });
+          }
+        });
+    } 
+    catch (e) {
+      console.log("Error parsing ids: " + js.pp(e));
+      usage();
+    }
+  }
+});

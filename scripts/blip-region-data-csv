@@ -1,0 +1,221 @@
+#!/usr/bin/env node
+
+var exec = require('child_process').exec;
+var async = require('async');
+var mongoskin = require('mongoskin');
+var Tile = require('../lib/tile').Tile;
+var GlobalMercator = require('../support/GlobalMapTiles').GlobalMercator;
+var factual = require('../lib/factual');
+var winston = require('winston');
+
+var argv = require('optimist')
+  .usage('Output a CSV representation of the Channel data.\nUsage: $0 [--place place] [--width distance] [--height distance] [--blips bpc] [--blacklist]')
+  .default('place', 'San Francisco')
+  .default('width', 5000)
+  .default('height', 5000)
+  .default('blips', 1)
+  .default('blacklist', false)
+  .argv;
+
+var MONGOHQ_URL = process.env.PRODUCTION_MONGOHQ_URL;
+
+exec('./geocode "' + argv.place + '"', function onCoordinatesReady ( error, stdout, stderr ) {
+  if ( error || stderr ) {
+    console.log( error );
+    console.log( stderr );
+    return console.log( 'try again' );
+  }
+
+  var coords = stdout.split(',');
+  if ( coords.length != 2 ) return console.log( stdout );
+
+  var gm = new GlobalMercator();
+  var lat = parseFloat(coords[0]);
+  var lon = parseFloat(coords[1]);
+  var o = gm.LatLonToMeters(lat,lon);
+
+  var region = gm.MetersToLatLon(o[0]-argv.width/2, o[1]-argv.height/2).concat(gm.MetersToLatLon(o[0]+argv.width/2, o[1]+argv.height/2));
+  var db = mongoskin.db(MONGOHQ_URL);
+  
+  var finalCallback = function finalCallback ( error, result ) {
+    db.close();
+    if ( typeof callback == 'function' ) {
+      callback(error, result);
+    }
+  }
+
+
+  var bpc = argv.blips;
+  
+//  console.log( 'center:' );
+//  console.log( coords.join(',') );
+//
+//  console.log( 'region:' );
+//  console.log( region[0] + ',' + region[1] );
+//  console.log( region[0] + ',' + region[3] );
+//  console.log( region[2] + ',' + region[3] );
+//  console.log( region[2] + ',' + region[1] );
+//
+//  console.log(  );
+
+  var criterion = {
+    type: 'place',
+    $and: [
+      { 'location.latitude': { $gte: parseFloat(region[0]) } },
+      { 'location.latitude': { $lte: parseFloat(region[2]) } },
+      { 'location.longitude': { $gte: parseFloat(region[1]) } },
+      { 'location.longitude': { $lte: parseFloat(region[3]) } }
+    ]
+  };
+  if (!argv.blacklist) { 
+    criterion.blacklisted = false;
+    winston.info("Filtering blacklisted channels");
+  }
+  winston.info("Showing " + bpc + " blips per channel");
+  
+  db.collection('Channel').find(criterion).toArray(function onChannelsReady ( error, channels ) {
+    if ( error ) return finalCallback(error);
+
+    var data = [ ];
+
+    var getBlips = function getBlips ( channel, callback ) {
+      var criterion = {
+        'author._id': channel._id
+      }
+      var options = {
+        limit: bpc,
+        sort: [
+          [ 'createdTime', -1 ]
+        ]
+      }
+      db.collection('Blip').find(criterion, options).toArray(function onBlipsReady ( error, blips ) {
+        if ( error ) return callback();
+
+        var twitterId = factual.filterId(channel.factual, 'twitter');
+        var yelpUrl = factual.filterUrl(channel.factual, 'yelp');
+        var facebookId = factual.filterId(channel.factual, 'facebook');
+        //winston.debug(channel.name + " : " + twitterId + " , " + yelpUrl + " , " + facebookId);
+
+        var blips = blips.map(function ( blip ) {
+          var b = {
+            'blacklisted': channel.blacklisted ? true : false,
+            'channel-id': channel._id,
+            'channel-name': channel.name,
+            'channel-category': channel.category || null,
+            'channel-fb-id': channel.facebook.id,
+            'channel-factual-fb-id': facebookId, 
+            'channel-twitter-id': twitterId, 
+            'channel-yelp-url': yelpUrl,
+            'channel-web': channel.website, 
+            'channel-tel': channel.phone,
+            'channel-street': channel.location.street,
+            'channel-zip': channel.location.zip,
+            'channel-lat': channel.location.latitude,
+            'channel-lon': channel.location.longitude,
+            'channel-fb-likes': channel.facebook.likes,
+            'channel-fb-checkins': channel.facebook.checkins,
+            //'channel-talking-about-count': channel.facebook.talking_about_count,
+            //'channel-description': channel.description,
+            //'blip-message': blip.message,
+            //'blip-created-time': blip.createdTime,
+            //'blip-fb-like-count': blip.facebook ? blip.facebook.likeCount : null,
+            //'blip-fb-comment-count': blip.facebook ? blip.facebook.commentCount : null,
+            //'blip-id': blip._id,
+            //'channel-tile-index': 'tc:' + channel.location.tileIndex
+          }
+          return b;
+        });
+
+        if ( blips.length == 0 ) {
+          blips.push({
+            'blacklisted': channel.blacklisted ? true : false,
+            'channel-id': channel._id,
+            'channel-name': channel.name,
+            'channel-category': channel.category || null,
+            'channel-fb-id': channel.facebook.id,
+            'channel-factual-fb-id': facebookId, 
+            'channel-twitter-id': twitterId, 
+            'channel-yelp-url': yelpUrl,
+            'channel-web': channel.website, 
+            'channel-tel': channel.phone,
+            'channel-street': channel.location.street,
+            'channel-zip': channel.location.zip,
+            'channel-lat': channel.location.latitude,
+            'channel-lon': channel.location.longitude,
+            'channel-fb-likes': channel.facebook.likes,
+            'channel-fb-checkins': channel.facebook.checkins,
+
+            //'channel-talking-about-count': channel.facebook.talking_about_count,
+            //'channel-description': channel.description,
+            //'blip-message': 'NO BLIPS',
+            //'blip-created-time': null,
+            //'blip-fb-like-count': null,
+            //'blip-fb-comment-count': null,
+            //'blip-id': null,
+            //'channel-tile-index': 'tc:' + channel.location.tileIndex
+          });
+        }
+        
+//        console.log( JSON.stringify(blips, null, 2) );
+//        console.log( blips.length );
+        data = data.concat(blips);
+
+        callback();
+      });
+    }
+
+    var onDone = function onDone ( error ) {
+      if ( error ) return finalCallback(error);
+
+      var headers = [
+        'blacklisted',
+        'channel-id',
+        'channel-name',
+        'channel-category',
+        'channel-fb-id',
+        'channel-factual-fb-id',
+        'channel-twitter-id',
+        'channel-yelp-url',
+        'channel-web',
+        'channel-tel',
+        'channel-street',
+        'channel-zip',
+        'channel-lat',
+        'channel-lon',
+        'channel-fb-likes',
+        'channel-fb-checkins',
+        //'channel-talking-about-count',
+        // 'channel-description',
+        // 'blip-message',
+        // 'blip-created-time',
+        // 'blip-fb-like-count',
+        // 'blip-fb-comment-count',
+        // 'blip-id',
+        // 'channel-tile-index',
+      ];
+
+      data = data.map(function ( blip ) {
+        var a = [ ];
+        for ( var i in headers ) {
+          var value = blip[headers[i]] || null;
+          if ( typeof value == 'string' ) value = '"' + value.replace(/\n/gi, '"\n').replace(/"/gi, '""') + '"';
+          a.push(value);
+        }
+        return a;
+      });
+
+      data.unshift(headers);
+
+      data.forEach(function ( line ) {
+        console.log( line.join(',') );
+      });
+
+//      console.log( JSON.stringify(data, null, 2) );
+//      console.log( data.length );
+
+      finalCallback();
+    }
+
+    async.forEach(channels, getBlips, onDone);
+  });
+});

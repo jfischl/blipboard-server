@@ -1,0 +1,40 @@
+#!/bin/bash
+scriptDir=$(cd `dirname $0` && pwd);
+if [ -f "$scriptDir/.user.login" ]; then
+    userOption="--user `cat $scriptDir/.user.login`"
+else
+    userOption=""
+fi
+center="37.760445784292,-122.4348990529"
+type="place"
+
+while getopts s:l:u:hd name
+do	case "$name" in
+        s)      server="$OPTARG";;
+	l)	center="$OPTARG";;
+        u)      userOption="--user $OPTARG";;
+        d)      dataDump=1;;
+	h)	echo "usage: bgetpopularblips.sh [-l location] [-u username:password] [-d]"
+                echo "where server=url or one of production,staging,localhost"
+                echo "  and location=\"latitude,longitude\" or an address (remember the quotes)"
+                echo "  and -d is the data dump flag"
+		exit 1;;
+	esac
+done
+shift $(($OPTIND-1))
+
+latlng=`$scriptDir/geocode "$center"` 
+if [ "$?" != "0" ]; then
+   echo $latlng
+   exit 1;
+fi 
+domain=`$scriptDir/blip-resolve-server-domain "$server"`
+echo "curl \"$domain/blips/popular.txt?latlng=$latlng\" $userOption  ==>"
+if [ -z "$dataDump" ]; then 
+    curl "$domain/blips/popular?type=$type&latlng=$latlng" $userOption
+else
+    nodeScript="var result = process.argv[2]; console.log(result);"
+# result.blips.forEach(function (blip) { console.log(blip.author.name+': '+blip.message+' '+blip.createdTime); });";
+    echo $nodeScript
+    node -e "$nodeScript"  "`curl "$domain/blips/popular.txt?type=$type&latlng=$latlng" $userOption`"
+fi

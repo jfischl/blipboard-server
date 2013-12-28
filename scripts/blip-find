@@ -1,0 +1,47 @@
+#!/usr/bin/env node
+var mongo = require('../lib/mongo');
+var isHex = require('../lib/javascript').isHex;
+ObjectID=mongo.ObjectID;
+ObjectId=mongo.ObjectID;
+var collection = process.argv[2];
+var criterion;
+try {  
+  // !am! if user fails to properly quote the criterion, spaces may break
+  //      it into several arguments.  The following makes the script more forgiving:
+  var critComponents = process.argv.slice(3);
+  var critJoined = critComponents.join(" ");  
+  var evalString = "("+  critJoined +")";
+  console.log("evaluating "+evalString);
+  criterion = eval(evalString);   // turn criterion string into a js object
+}
+catch (e) { 
+  console.log("Invalid arguments to bfind.js: "+JSON.stringify(process.argv));
+  console.log("Remember to properly quote your criterion!");
+  criterion=undefined;
+}
+
+if (typeof(criterion) != 'object' || collection==="-h" || collection==="--help" || collection==="help") {
+  console.log("usage: bfind.js collection criterion\ne.g., bfind.js channels {_id:\"4f5ad30f023673c43d000028\"}");
+  process.exit();
+}
+else {
+  for (var key in criterion) {
+    var val = criterion[key];
+    if (isHex(val) && val.length==24) {
+      criterion[key] = mongo.ObjectID(val);
+    }
+  }
+
+  mongo.initialize(function (error) {
+    mongo[collection].find(criterion).toArray(function(error,array) {
+      if (error) {
+        console.log("Error "+JSON.stringify(error,null,2));
+      }
+      else {
+        console.log("Search result:");
+        console.log(JSON.stringify(array,null,2));
+      }
+      process.exit()
+    });
+  });
+}

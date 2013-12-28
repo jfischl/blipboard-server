@@ -1,0 +1,70 @@
+#!/usr/bin/env node
+var mongo = require('../lib/mongo');
+var config = require('../config');
+var Tile = require('../lib/tile').Tile;
+var js = require('../lib/javascript');
+var async = require('async');
+var placeManager = require('../managers/placeManager');
+
+mongo.initialize(function () {
+  mongo.channels.findItems({type:mongo.channelType.place}, function (error,channels) {
+    console.log("Processing "+channels.length+" channels");
+    async.forEachSeries(channels,function (channel,forEachSeriesCallback) {
+      var location = channel.location;
+      if (location.latitude && location.longitude) {
+        var tileIndex = mongo.tile(location.latitude,location.longitude).toIndex();
+        async.series([
+          // update the place's location.tileIndex
+          function (callback) {
+            mongo.channels.update({_id:channel._id},
+                                  {$set: {'location.tileIndex':tileIndex}},
+                                  {multi:true,safe:true},
+                                  function (error,result) {
+                                    //console.log("Updated tileIndex for "+channel.name + " :" + result) 
+                                    callback(error,result);
+                                  });
+          },
+          // remove channel ranks
+          function (callback) {
+            mongo.channelRanks.remove({channel:channel._id},
+                                      {multi:true,safe:true},
+                                      callback);
+          },
+          // rebuild the place's channel rank
+          function (callback) {
+            channel.location.tileIndex = tileIndex;
+            placeManager.updateChannelRank(channel,function (error,result) {
+              //console.log("updated channelRank for "+channel.name + " :" + result);
+              callback(error,result);
+            });
+          },
+          // update the blip tileIndexes at that place:
+          function (callback) {
+            mongo.blips.update({'place._id':channel._id},
+                               {$set:{'place.location.tileIndex':tileIndex}},
+                               {multi:true,safe:true},
+                               function (error,result) {
+                                 //console.log("Updated blips at "+channel.name + " :" + result);
+                                 callback(error,result);
+                               });
+          }
+        ], function finished(error,result) {  
+          if (error) { 
+            console.log("Error processing " + channel.name + " :" + error);
+          }
+          else {
+            console.log("Updated: " + channel.name);
+          }
+          forEachSeriesCallback(error,result);
+        });
+      }
+      else {
+        console.log("Error, place channel has no lat/lng:"+js.pp(channel));
+      }
+    }, function endAsyncForEach (error,result) {
+      mongo.close(function () { 
+        console.log("Finished");
+      });
+    });
+  });
+});

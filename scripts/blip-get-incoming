@@ -1,0 +1,30 @@
+#!/bin/bash
+scriptDir=$(cd `dirname $0` && pwd);
+if [ -f "$scriptDir/.user.login" ]; then
+    userOption="--user `cat $scriptDir/.user.login`"
+else
+    userOption=""
+fi
+
+function usage() {
+    echo "usage: bgetincoming.sh [-u username:password] \"location\""
+    echo "where server=url or one of production,staging,localhost"
+    echo "  and location=\"latitude,longitude\" or an address (remember the quotes)"
+}
+
+while getopts s:u:h name
+do	case "$name" in
+        s)  server="$OPTARG";;
+        u)  userOption="--user $OPTARG";;
+	h)  usage
+            exit 0;;
+	esac
+done
+shift $(($OPTIND-1))
+if [ -z "$1" ]; thencase 
+    usage
+    exit 1
+fi
+latlng=`$scriptDir/geocode "$1"` 
+domain=`$scriptDir/bresolveserverdomain.sh "$server"`
+curl "$domain/me/received.txt?latlng=$latlng" $userOption

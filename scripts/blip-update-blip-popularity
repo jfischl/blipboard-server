@@ -1,0 +1,43 @@
+#!/usr/bin/env node
+var async = require('async');
+var assert = require('assert');
+var blipManager = require('../managers/blipManager');
+var js = require('../lib/javascript');
+var mongo = require('../lib/mongo');
+
+mongo.initialize(function (error) 
+{
+  if (error) {
+    console.log(js.pp(error));
+    process.exit(-1);
+  }
+  else {
+    var allPlacesQueued = false;
+
+    var queue = async.queue(blipManager.updateBlipPopularity, 25);
+    queue.drain = function() { 
+      if (allPlacesQueued) { 
+        console.log("done.");
+        mongo.close();
+        process.exit();
+      }
+    }
+    mongo.blips.findEach({}, function(error, blip) { 
+      if (!error) {
+        if (blip) { 
+          queue.push(blip);
+        }
+        else {
+          console.log("*************************");
+          allPlacesQueued = true;
+          if (queue.length() === 0) { 
+            // without this, the queue may be empty before allPlacesQueued is set true
+            console.log("done.");
+            mongo.close();
+            process.exit();
+          }
+        }
+      }
+    });
+  }
+});

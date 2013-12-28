@@ -1,0 +1,53 @@
+#!/usr/bin/env node
+
+var repl = require('repl');
+
+async = require('async');
+mongo = require('../lib/mongo');
+categories = require('../data/categories');
+facebook = require('../lib/facebook');
+js = require('../lib/javascript');
+
+async.series({ mongo: mongo.initialize,
+               topics: categories.loadTopicIds,
+               facebook: facebook.loadDeveloperAccessToken
+             },
+             function(error) {
+               if (error) { 
+                 console.log("ERROR: " + js.pp(error));
+                 process.exit(-1);
+               }
+               
+               ObjectId = ObjectID = require('../lib/mongo').ObjectID;
+               factual = require('../lib/factual');
+               userManager = require('../managers/userManager');
+               blipManager = require('../managers/blipManager');
+               channelManager = require('../managers/channelManager');
+               notificationManager = require('../managers/notificationManager');
+               blipRefreshService = require('../managers/blipRefreshService');
+               channelEvents = require('../managers/channelEvents');
+               validate = require('../managers/validate');
+               userTileManager = require('../managers/userTileManager');
+               listenNetworkManager = require('../managers/listenNetworkManager');
+               placeManager = require('../managers/placeManager');
+
+               page = require('../lib/page');
+               logutil = require('../lib/logutil');
+               plot = require('../lib/plot');
+               tile = require('../lib/tile');
+               events = require('../lib/events');
+               error = require('../lib/error');
+               javascript = require('../lib/javascript');
+               password = require('../lib/password');
+               pushnot = require('../lib/pushnot');
+
+               accountController = require('../rest/accountController');
+               channelController = require('../rest/channelController');
+               middleware = require('../rest/middleware');
+               blipController = require('../rest/blipController');
+               resource = require('../rest/resource');
+
+               //A "local" node repl with a custom prompt
+               var local = repl.start("blipboard> ");  
+             });
+

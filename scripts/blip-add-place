@@ -1,0 +1,54 @@
+#!/usr/bin/env node
+var async = require('async');
+var winston = require('winston');
+
+var categories = require('../data/categories');
+var factual = require('../lib/factual');
+var mongo = require('../lib/mongo');
+var js = require('../lib/javascript');
+
+var argv = require('optimist')
+  .usage('Adds place channel(s)\nUsage: $0 [--url url]')
+  .alias('url', 'u').describe('url', 'specify a url to lookup the place. e.g. yelp').demand('url')
+  .argv;
+
+async.series({
+  mongo: function(callback) {
+    mongo.initialize(callback);
+  },
+  topics: function(callback) { 
+    categories.loadTopicIds(callback);
+  }, 
+  load: function(callback) { 
+    factual.resolveUrlToChannel(argv.url, callback);
+  }
+}, function(error, results) { 
+  if (error) { 
+    console.log("Failed:"+js.pp(error));
+    process.exit(-1);
+  }
+  var criterion = {};
+  if (results.load.facebook && results.load.facebook.id) { 
+    criterion = { $or:  [{'factual.id': results.load.factual.id},
+                         {'facebook.id': results.load.facebook.id}]}
+  }
+  else { 
+    criterion = {'factual.id': results.load.factual.id};
+  }
+  mongo.channels.findAndModify(criterion,
+                               [['_id','asc']], 
+                               {$set: results.load}, 
+                               {upsert: true, new:true}, 
+                               function (error, record) { 
+                                 if (error) { 
+                                   winston.info("error inserting place: " + js.pp(error));
+                                 }
+                                 else {
+                                   var fbid = results.load.facebook ? results.load.facebook.id : "n/a";
+                                   winston.info("inserted/updated: " + record.name + " id=" + record._id + "fb=(" + fbid + ")");
+                                 }
+                                 mongo.close();
+                               });
+});
+
+

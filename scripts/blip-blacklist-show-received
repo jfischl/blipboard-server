@@ -1,0 +1,17 @@
+#!/usr/bin/env node
+
+var blacklist = require('../managers/blacklistManager');
+
+console.log( '\033[1mSearching for blacklisted received blips:\033[0m' );
+console.log( 'Please wait...' );
+var done = function done ( error, result ) {
+  if ( error ) {
+    console.log( '\033[1;31mSomething went wrong: ' + error + '\033[0m' );
+  }
+  else {
+    console.log( JSON.stringify(result, null, 2) );
+  }
+  console.log( '\033[1mDone\033[0m' );
+}
+
+blacklist.getReceivedBlips(done);

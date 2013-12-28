@@ -1,0 +1,168 @@
+<html>                                                                  
+  <head>                                                                  
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.9.1/themes/base/jquery-ui.css" />
+
+    <script src="http://code.jquery.com/jquery-1.8.2.js"></script>
+    <script src="http://code.jquery.com/ui/1.9.1/jquery-ui.js"></script>
+
+    <script type="text/javascript">                                         
+      var results = [ ];
+      var update = function update ( id ) {
+        var place = results[id];
+
+        place.name = $('#' + id + 'name').val();
+        place.phone = $('#' + id + 'phone').val();
+        place.website = $('#' + id + 'website').val();
+        place.picture = $('#' + id + 'picture').val();
+
+        if ( !place.location ) place.location = { }
+
+        place.location.street = $('#' + id + 'street').val();
+        place.location.city = $('#' + id + 'city').val();
+        place.location.state = $('#' + id + 'state').val();
+        place.location.zip = $('#' + id + 'zip').val();
+        place.location.country = $('#' + id + 'country').val();
+
+        place.description = $('#' + id + 'description').val();
+
+        var namespaces = { yelp: true, foursquare: true, facebook: true, twitter: true }
+        var factual = place.factual && place.factual instanceof Array ? place.factual : [ ];
+
+        for ( var i = 0; i < factual.length; i++ ) namespaces[factual[i].namespace] = true;
+
+        place.factual = [ ];
+
+        for ( var namespace in namespaces ) {
+          var values = $('#' + id + namespace).val().split('\n');
+          
+          for ( var j = 0; j < values.length; j++ ) {
+            var parts = values[j].split(' ');
+
+            place.factual.push({
+              factual_id: parts[1],
+              namespace: namespace,
+              namespace_id: parts[2],
+              url: parts[0]
+            });
+          }
+        }
+
+        $.post('places', { place: place }, function onUpdated ( ) { });
+
+        return false;
+      }
+
+      var input = function input ( id, label, value ) {
+        var html = '<label for="' + id + '" style="width:200px">' + label + ':</label>';
+
+        html += '<input type="text" id="' + id + '" style="width:1200px" value="' + (value || '') + '">';
+        html += '<br>';
+
+        return html;
+      }
+
+      var textarea = function textarea ( id, label, value ) {
+        var html = '<label for="' + id + '" style="width:200px">' + label + ':</label>';
+
+        html += '<textarea type="text" id="' + id + '" style="width:1200px;height:38px;vertical-align:top;font-size:10pt">';
+        html += value || '';
+        html += '</textarea><br>';
+
+        return html;
+      }
+
+      var img = function img ( src, size ) {
+        var size = size || 100;
+        var html = '<img ' + (src ? 'src="' + src + '" ' : '');
+
+        html += 'height="' + size + '" width="' + size + '" style="float:left"'; 
+        html += '>';
+
+        return html;
+      }
+
+      var button = function button ( ) {
+        var html = '<button style="width:100px;float:left">Update</button>';
+
+        return html;
+      }
+
+      $(document).ready(function onReady ( ) {
+        $('#search').submit(function ( ) {
+          $.get('places/search', { q: $('#query').val() }, function onGotResult ( data ) {
+            var data = results = data || [ { } ];
+
+            var html = '';
+
+            for ( var i = 0; i < data.length; i++ ) {
+              if ( !data[i] ) continue;
+              if ( !data[i].location ) data[i].location = { }
+
+              html += '<h3>' + img(data[i].picture, 24) + data[i].name + '</h3>';
+              
+              html += '<div><form action="javascript:update(' + i + ')">';
+
+              html += img(data[i].picture);
+
+              html += input(i + 'name', 'Name', data[i].name);
+              html += '<br>';
+              html += input(i + 'phone', 'Phone', data[i].phone);
+              html += input(i + 'website', 'Website', data[i].website);
+              html += input(i + 'picture', 'Picture', data[i].picture);
+              html += '<br>';
+
+              html += button(i);
+
+              html += input(i + 'street', 'Street', data[i].location.street);
+              html += input(i + 'city', 'City', data[i].location.city);
+              html += input(i + 'state', 'State', data[i].location.state);
+              html += input(i + 'zip', 'Zip', data[i].location.zip);
+              html += input(i + 'country', 'Country', data[i].location.country);
+              html += '<br>';
+
+              html += textarea(i + 'description', 'Description', data[i].description);
+              html += '<br>';
+
+              var urls = { yelp: [ ], foursquare: [ ], facebook: [ ], twitter: [ ] }
+              var factual = data[i].factual && data[i].factual instanceof Array ? data[i].factual : [ ];
+
+              for ( var j = 0; j < factual.length; j++ ) {
+                if ( !urls[factual[j].namespace] ) urls[factual[j].namespace] = [ ];
+
+                var url = (factual[j].url || '') + ' ' + (factual[j].factual_id || '') + ' ' + (factual[j].namespace_id || '');
+
+                urls[factual[j].namespace].push(url);
+              }
+
+              for ( var namespace in urls ) {
+                html += textarea('' + i + namespace, namespace, urls[namespace].join('\n'));
+
+                if ( namespace == 'twitter' ) html += '<br>';
+              }
+
+              html += button(i);
+              
+              html += '</form></div>';
+            }
+
+            $('#result').empty().append($('<div></div>').html(html)).children().accordion();
+            $('#result').append($('<pre align="left"></pre>').html(JSON.stringify(data, null, 2)));
+          });
+
+          return false;
+        });
+
+        $('#query').focus();
+      });
+    </script>                                                               
+  </head>                                                                 
+  <body>                                                                  
+    <div>
+      <form id="search">
+        <label for="query" style="width:100px">Search Query: </label>
+        <input type="text" id="query" style="width:1400px">
+      </form>
+    </div>
+    <div id="result" align="right" style="width:1500px"></div>
+  </body>                                                                 
+</html>

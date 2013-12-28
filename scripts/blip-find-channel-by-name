@@ -1,0 +1,20 @@
+#!/usr/bin/env node
+
+var db = require('mongoskin').db(process.env.MONGOHQ_URL);
+
+var name = process.argv[2];
+
+console.log( '\033[1mLooking for channel "' + name + '"\033[0m' );
+
+var criterion = { name: { $regex: name, $options: 'i' } }
+
+db.collection('Channel').find(criterion).toArray(function (error, docs) {
+  if ( error ) {
+    console.log( '\033[1;31mSomething went wrong: ' + error + '\033[0m' );
+  }
+  else {
+    console.log( JSON.stringify(docs, null, 2) );
+  }
+  console.log( '\033[1mDone\033[0m' );
+  db.close();
+});

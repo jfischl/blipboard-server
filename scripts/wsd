@@ -1,0 +1,56 @@
+#!/usr/bin/python
+import urllib
+import re
+import sys
+import subprocess
+import os,os.path
+
+def getSequenceDiagram( text, outputFile, style = 'default', format = 'svg' ):
+    request = {}
+    request["message"] = text
+    request["style"] = style
+    request["format"] = format
+    request["apiVersion"] = "1"
+
+    url = urllib.urlencode(request)
+
+    f = urllib.urlopen("http://www.websequencediagrams.com/", url)
+    line = f.readline()
+    f.close()
+
+    expr = re.compile("(\?(img|pdf|png|svg)=[a-zA-Z0-9]+)")
+    m = expr.search(line)
+
+    if m == None:
+        print "Invalid response from server."
+        return False
+
+    urllib.urlretrieve("http://www.websequencediagrams.com/" + m.group(0),
+            outputFile )
+    return True
+
+style = "napkin"
+
+text = ""
+svgFile = ""
+wsdFile = ""
+if len(sys.argv)<2:
+    print "Generates a web sequence diagram (http://websequencediagram.com)"
+    print "usage: wsd.py input.txt [outfile]"
+    quit()
+else:
+    wsdFile = os.path.realpath(os.path.normpath(sys.argv[1]))
+    
+with open(wsdFile,'r') as file:
+    text = file.read()
+
+if len(sys.argv)>2:
+    svgFile = sys.argv[2]
+else:
+    wsdBase = os.path.splitext(wsdFile)[0]
+    svgFile = wsdBase + ".svg"
+    
+getSequenceDiagram( text, svgFile, style ) 
+
+print "Saved output as "+svgFile
+subprocess.call(["open",svgFile])

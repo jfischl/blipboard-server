@@ -1,0 +1,13 @@
+#!/usr/bin/env node
+
+var events = require('../managers/channelEvents');
+var placeManager = require('../managers/placeManager');
+var config = require('../config');
+var mongo = require('../lib/mongo');
+
+mongo.initialize();
+mongo.channels.findEach({type: config.MONGO.channelType.place}, {fields:['_id']}, function(error, channel) {
+  if (channel) { 
+    events.listenersCountChange(channel._id);
+  }
+});

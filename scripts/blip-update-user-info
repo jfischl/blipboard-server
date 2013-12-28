@@ -1,0 +1,39 @@
+#!/usr/bin/env node
+
+var async = require('async');
+
+var mongo = require('../lib/mongo');
+var twitter = require('../lib/twitter');
+
+mongo.initialize(function mongoIsInitialized ( error ) {
+  var count = 0, criterion = { type: 'user', twitter: { $ne: null }}
+
+  console.log('Pulling users');
+
+  mongo.channels.find(criterion).toArray(function gotChannels ( error, users ) {
+    console.log('Found ' + users.length + ' channels');
+
+    var update = function update ( user, callback ) {
+      twitter.connection.showUser(user.twitter && user.twitter.id, function onRetrieved ( error, twitUsers ) {
+        if ( !error && twitUsers.length ) {
+          user.twitter = {
+            id: twitUsers[0].id,
+            handle: '@' + twitUsers[0].screen_name.toLowerCase()
+          }
+
+          mongo.channels.update(user._id, user, { safe: true }, function onUpdated ( error, result ) {
+            if ( !error ) count++;
+
+            callback(error);
+          });
+        }
+        else callback();
+      });
+    }
+
+    async.forEach(users, update, function ( ) {
+      console.log('Done: updated ' + count + ' users');
+      process.exit();
+    });
+  });
+});

@@ -1,0 +1,37 @@
+#!/usr/bin/env node
+var URI = require('URIjs');
+var async = require('async');
+var assert = require('assert');
+var js = require('../lib/javascript');
+var mongo = require('../lib/mongo');
+var channelManager = require('../managers/channelManager');
+
+mongo.initialize(function (error) 
+{
+  if (error) {
+    console.log(js.pp(error));
+    process.exit(-1);
+  }
+  else {
+    mongo.channels.find({}).toArray(initialize);
+    function initialize(error, channels) { 
+      if (error) { 
+        console.log("error: " + error);
+        done();
+      }
+      else if (channels) { 
+        var ids = channels.map(function(c) { return c._id; });
+        async.eachLimit(ids, 25, channelManager.initializeStats, done);
+      }
+      else {
+        console.log("no channels");
+      }
+    }
+
+    function done() {
+      console.log("done.");
+      mongo.close();
+      process.exit();
+    }
+  }
+});

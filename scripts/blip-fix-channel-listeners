@@ -1,0 +1,36 @@
+#!/usr/bin/env node
+var assert = require('assert');
+var mongo = require('../lib/mongo');
+var js = require('../lib/javascript');
+var async = require('async');
+var listenNetworkManager = require('../managers/listenNetworkManager');
+
+mongo.initialize(function (error) 
+{
+  if (error) {
+    console.log(js.pp(error));
+  }
+  else {
+    var allPlacesQueued = false;
+    var queue = async.queue(listenNetworkManager.recomputeListenersCount, 25);
+    queue.drain = function() { 
+      if (allPlacesQueued) {
+        console.log("done.");
+        mongo.close();
+        process.exit();
+      }
+    }
+    
+    mongo.channels.findEach({}, {fields:['_id','listenersCount','name']}, function(error, channel) { 
+      assert(!error);
+      if (channel) {
+        //console.log("Fixing " + channel._id + " " + channel.name);
+        queue.push(channel._id);
+      }
+      else {
+        allPlacesQueued = true;
+      }
+    });
+  }
+});
+

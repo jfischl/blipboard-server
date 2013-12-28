@@ -1,0 +1,24 @@
+#!/usr/bin/env node
+
+var async = require('async');
+var db = require('mongoskin').db(process.env.MONGOHQ_URL);
+
+console.log( 'Retreiving blips' );
+
+db.collection('Blip').find().toArray(function ( error, blips ) {
+  if ( error ) { console.log( error ); db.close(); }
+
+  if ( blips ) {
+    async.forEach(blips, function ( blip, callback ) {
+        var period = (blip.author.type == 'place' ? 2 * 7 : 365) * 24 * 60 * 60 * 1000;
+  
+        var expire = new Date(blip.createdTime.getTime() + period);
+  
+        db.collection('Blip').update(blip, { $set: { expiryTime: expire } }, { safe: true }, callback);
+      }, function ( error ) {
+        console.log( error || 'success!' );
+  
+        db.close();
+    });
+  }
+});

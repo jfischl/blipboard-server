@@ -1,0 +1,33 @@
+#!/bin/bash
+scriptDir=$(cd `dirname "${0}"` && pwd)
+outfile="$scriptDir/buservars.sh"
+
+if [ -z "$1" ]; then 
+    echo "usage:  bsetupusers.sh N   -  makes N users and stores ids & passwords in a file"
+    exit;
+fi
+echo "# this file sets up user variables" > $outfile
+for x in `seq 1 $1`
+do 
+    makeUserResult=`curl -s http://localhost:3000/accounts -d 'password=#password'`;
+    curlResult="$?"
+    if [ "$curlResult" != "0" ]; then
+        echo "curl failed (exit code $curlResult)"
+        exit $curlResult
+    fi
+    echo $makeUserResult
+    nodeScript="var j=JSON.parse('$makeUserResult').account; console.log('export user$x='+j.id); console.log('export pwd$x=#password');"
+    node -e "$nodeScript" >> $outfile
+done
+chmod +x $outfile
+source $outfile
+echo "Success! Wrote $outfile:"
+cat $outfile
+
+echo "$user1:$pwd1" > "$scriptDir/.user.login"
+echo "------------------------------------------------------------"
+echo "Default user is user1 ($user1).  "
+echo "Use blogin.sh $userX $pwdX to change to a different user."
+echo ""
+echo "To access user and password variables, evaluate:"
+echo "\". $outfile\""

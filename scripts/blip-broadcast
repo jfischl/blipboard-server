@@ -1,0 +1,38 @@
+#!/bin/bash
+scriptDir=$(cd `dirname $0` && pwd);
+
+function usage() {
+    echo "usage: blip-broadcast [-a authorid]  [-u username:password] [-s server] placeid \"message\" "
+    echo "where server=url or one of production,staging,localhost"
+    exit 1
+}
+
+if [ -f "$scriptDir/.user.login" ]; then
+    userOption="--user `cat $scriptDir/.user.login`"
+else
+    userOption=""
+fi
+authorid="me"
+while getopts s:a:t:u:h name
+do	case "$name" in
+        a)      authorid=$OPTARG;;
+        u)      userOption="--user $OPTARG";;
+        s)      server="$OPTARG";;
+	h)	usage;;
+	esac
+done
+shift $(($OPTIND-1))
+
+domain=`$scriptDir/blip-resolve-server-domain "$server"`
+placeid="$1"
+message="$2"
+
+if [ -z "$message" ]; then
+    usage
+fi
+
+if [ -z "$placeid" ]; then
+    usage
+fi
+
+curl "$domain/me/blips.txt" -d "placeid=$placeid" -d "message=$message" -d "authorid=$authorid" $tagsOption $userOption

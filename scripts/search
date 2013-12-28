@@ -1,0 +1,13 @@
+#!/bin/sh
+query="$1"
+dir="$2"
+if [ -z "$dir" ]; then
+    dir="."
+fi
+function usage () {
+    echo "usage: search {query} {path}"
+}
+mdfind "$query" -onlyin $dir
+if [ "$?" != "0" ]; then
+    usage
+fi

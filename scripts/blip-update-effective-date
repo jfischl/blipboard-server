@@ -1,0 +1,44 @@
+#!/usr/bin/env node
+
+var async = require('async');
+var db = require('mongoskin').db(process.env.MONGOHQ_URL);
+
+console.log( 'Retreiving blips' );
+
+db.collection('Blip').find().toArray(function ( error, blips ) {
+  if ( error ) { console.log( error ); db.close(); }
+
+  if ( blips ) {
+    async.forEach(blips, function ( blip, callback ) {
+        var match, effective = new Date(0);
+
+        if ( match = blip.message.match(/\b(today|tonight)\b/i) ) {
+          effective = new Date(blip.createdTime.getTime());
+        }
+        else if ( match = blip.message.match(/\btomorrow\b/i) ) {
+          effective = new Date(blip.createdTime.getTime() + 1 * 24 * 60 * 60 * 1000);
+        }
+        else if ( match = blip.message.match(/\bweekend\b/i) ) {
+          var offset = 5 - blip.createdTime.getDay()
+
+          if ( offset <= 0 ) offset += 7;
+
+          effective = new Date(blip.createdTime.getTime() + offset * 24 * 60 * 60 * 1000);
+        }
+        else if ( match = blip.message.match(/\b((sunday)|(monday)|(tuesday)|(wednesday)|(thursday)|(friday)|(saturday))\b/i) ) {
+          var target = 0; while ( !match[2 + target] ) target += 1;
+          var offset = target - blip.createdTime.getDay()
+
+          if ( offset <= 0 ) offset += 7;
+
+          effective = new Date(blip.createdTime.getTime() + offset * 24 * 60 * 60 * 1000);
+        }
+  
+        db.collection('Blip').update(blip, { $set: { effectiveDate: effective } }, { safe: true }, callback);
+      }, function ( error ) {
+        console.log( error || 'success!' );
+  
+        db.close();
+    });
+  }
+});

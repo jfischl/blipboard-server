@@ -1,0 +1,21 @@
+#!/bin/bash
+#defaults:
+scriptDir=$(cd `dirname $0` && pwd);
+if [ -f "$scriptDir/.user.login" ]; then
+    userOption="--user `cat $scriptDir/.user.login`"
+else
+    userOption=""
+fi
+while getopts s:u:h name
+do	case "$name" in
+        u)      userOption="--user $OPTARG";;
+	h)	echo "Tunes in a user to the channel (default user set by login.sh)"
+                echo "usage: btunein.sh [-u username:password] [-s server] channelId "
+                echo "where server=url or one of production,staging,localhost"
+		exit 1;;
+	esac
+done
+shift $(($OPTIND-1))
+domain=`$scriptDir/blip-resolve-server-domain "$server"`
+
+curl -s "$domain/me/listensTo/$1" -d "" $userOption

@@ -1,0 +1,25 @@
+#!/usr/bin/env node
+
+var push = require('../lib/pushnot');
+var argv = require('optimist').usage('Send a push notification')
+  .alias('user', 'uid').describe('user', 'deliver notification to user id').demand('user')
+  .alias('msg', 'message').default('msg', 'test').describe('message', 'text of push notification')
+  .default('badge', 1).describe('badge', 'badge count')
+  .describe('id', 'notification id')
+  .alias('fid', 'followerId').describe('fid', 'deprecated: id of the user who followed')
+  .alias('lid', 'likerId').describe('lid', 'deprecated: id of the user who liked a blip')
+  .alias('bid', 'blipId').describe('bid', 'deprecated: id of the blip')
+  .argv;
+
+if (argv.help) {
+  argv.showHelp();
+}
+else {
+  var options = { userId: argv.fid,
+                  likerId: argv.lid,
+                  blipId: argv.bid,
+                  id: argv.id
+                };
+  push.sendPushNotification(argv.user, argv.badge, argv.msg, options);
+}  
+  

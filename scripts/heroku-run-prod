@@ -1,0 +1,18 @@
+#!/bin/sh
+# Runs a script on Blipboard production, correctly quoting all passed arguments
+declare -a herokuArgs
+for arg in "${@:2}"
+do
+    quotedArg="${arg// /\ }"
+    quotedArg="${quotedArg//#/\\#}"
+    quotedArg="${quotedArg//(/\\(}"
+    quotedArg="${quotedArg//)/\\)}"
+    quotedArg="${quotedArg//[/\\[}"
+    quotedArg="${quotedArg//]/\\]}"
+    quotedArg="${quotedArg//'/\\'}"
+    quotedArg="${quotedArg//\"/\\\"}"
+    quotedArg="${quotedArg//$/\\$}"
+    herokuArgs=("${herokuArgs[@]}" ${quotedArg})
+done
+#echo ${herokuArgs[@]}
+heroku run --app blipboard-prod $1 ${herokuArgs[@]}

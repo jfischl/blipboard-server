@@ -1,0 +1,17 @@
+#!/usr/bin/env node
+
+var blacklist = require('../managers/blacklistManager');
+var description = require('../config').BLACKLIST;
+
+console.log( '\033[1mAdding to blacklist all described by:\033[0m' );
+console.log( JSON.stringify(description, null, 2) );
+console.log( 'Please wait...' );
+
+var done = function done ( error, result ) {
+  if ( error ) {
+    console.log( '\033[1;31mSomething went wrong: ' + error + '\033[0m' );
+  }
+  console.log( '\033[1mDone\033[0m' );
+}
+
+blacklist.remove(description, done);

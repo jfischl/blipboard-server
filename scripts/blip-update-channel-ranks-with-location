@@ -1,0 +1,28 @@
+#!/usr/bin/env node
+var mongo = require('../lib/mongo');
+var config = require('../config');
+var js = require('../lib/javascript');
+var async = require('async');
+
+mongo.initialize(function () {
+  mongo.channelRanks.findItems({type:mongo.channelType.place}, function (error,channelRanks) {
+    console.log("Processing "+channelRanks.length+" channels");
+    async.forEachSeries(channelRanks,function (channelRank,callback) {
+      mongo.channels.findOne({'_id': channelRank.channel}, {fields:['location','name']}, function (error, channel) {
+        mongo.channelRanks.update({_id: channelRank._id},
+                                  {$set: {'location.latitude':channel.location.latitude,
+                                          'location.longitude':channel.location.longitude}},
+                                  {safe:true,multi:true},
+                                  function (error,result) {
+                                    if (error) { console.log("error: " + error); }
+                                    console.log("Updated location for "+channel.name + " result=" + result) 
+                                    callback(error,result);
+                                  });
+      });
+    }, function done(error) {
+      mongo.close(function () { 
+        console.log("finished");
+      });
+    });
+  });
+});

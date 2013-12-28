@@ -1,0 +1,12 @@
+#!/bin/bash
+server=$1
+if [ -z "$server" -o "$server" == "localhost" ]; then
+    domain="localhost:3000"
+elif [ "$server" == "staging" ]; then
+    domain="http://blipboard-staging.herokuapp.com"
+elif [ "$server" == "production" ]; then
+    domain="https://api.blipboard.com"
+else
+    domain="$server"
+fi
+echo $domain

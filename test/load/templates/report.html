@@ -1,0 +1,191 @@
+<html>
+  <head>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      // defining custom controls
+      var Slider = function Slider ( id, options ) {
+        var self = Slider.reference[id] = this;
+
+        this.element = document.getElementById(id);
+        this.id = id;
+
+        this.min = options && options.min || 0;
+        this.max = options && options.max || 9;
+
+        this.step = options && options.step || 1;
+
+        this.width = options && options.width || 300;
+
+        this.title = options && options.title || '$value';
+
+        this.__defineGetter__('value', function getValue ( ) {
+          return self.element.children[0] && self.element.children[0].children[1].value || self.min;
+        });
+
+        this.__defineSetter__('value', function setValue ( v ) {
+          self.element.children[0].children[1].value = v;
+          self.element.children[0].children[0].textContent = self.title.replace('$value', v);
+        });
+
+        if ( options.value ) {
+          this.draw();
+          this.value = options.value;
+        }
+      }
+
+      Slider.prototype.draw = function draw ( ) {
+        this.isVisible = true;
+
+        var title = '<div style="align: center">$title</div>'.replace('$title', this.title.replace('$value', this.min));
+        var slide = '<input type="range" min="$min" max="$max" step="$step" value="$min" style="width: $width" onchange="Slider.updated(\'$id\', this.value);">';
+        var increment = '<button type="button" onclick="Slider.updated(\'$id\', $value)" ></button>';
+        var decrement = '<button type="button" onclick="Slider.updated(\'$id\', $value)" ></button>';
+
+        slide = slide.replace('$min', this.min);
+        slide = slide.replace('$max', this.max);
+        slide = slide.replace('$step', this.step);
+        slide = slide.replace('$width', this.width);
+        slide = slide.replace('$id', this.id);
+
+        increment = increment.replace('$id', this.id);
+        increment = increment.replace('$value', this.value + this.step);
+        decrement = decrement.replace('$id', this.id);
+        decrement = decrement.replace('$value', this.value - this.step);
+
+        this.element.innerHTML = '<div>' + title + decrement + slide + increment + '</div>';
+      }
+
+      Slider.updated = function updated ( id, value ) {
+        Slider.reference[id].value = value;
+      }
+
+      Slider.reference = { }
+
+      var drawLatencyGauge = function drawLatencyGauge ( gauge, name, min, max, average ) {
+        average = average || 0;
+        min = Math.min(min || 0, average);
+        max = Math.max(max || 100, average);
+
+        var options = {
+          width: 150,      height: 150,
+          greenFrom: 0,    greenTo: 100,
+          yellowFrom: 101, yellowTo: 250,
+          redFrom: 251,    redTo: Math.max(max, 251),
+          min: min,        max: max,
+          minorTicks: 5
+        }
+
+        if ( !(gauge instanceof google.visualization.Gauge) ) {
+          gauge = new google.visualization.Gauge(document.getElementById(gauge));
+        }
+
+        gauge.draw(google.visualization.arrayToDataTable([['Label', 'Value'], [name, average]]), options);
+
+        return gauge;
+      }
+
+      var drawLatencyGraph = function drawLatencyGraph ( graph, latencies, origin ) {
+        latencies = latencies || [ ], origin = origin || 0;
+
+        if ( latencies.length == 0 ) latencies.push({ time: 0 });
+
+        var table = [ [ 'Time Elapsed', 'Report Location', 'Get Popular' ] ];
+        var requests = [ 'reportLocation', 'getPopular' ];
+
+        for ( var i = 0; i < latencies.length; i++ ) {
+          var row = [ latencies[i].time - origin ];
+
+          for ( var j = 0; j < requests.length; j++ ) {
+            row.push((latencies[i][requests[j]] && latencies[i][requests[j]].average) || 0);
+          }
+
+          table.push(row);
+        }
+
+        var table = google.visualization.arrayToDataTable(table);
+
+        var options = {
+          title: 'Latencies',
+          vAxis: { title: 'Latency (ms)',  titleTextStyle: { color: 'red' } },
+          hAxis: { title: 'Time Elapsed (s)',  titleTextStyle: { color: 'red' } },
+          focusTarget: 'category',
+          interpolateNulls: true,
+          curveType: 'function'
+        };
+
+        if ( !(graph instanceof google.visualization.LineChart) ) {
+          graph = new google.visualization.LineChart(document.getElementById(graph));
+        }
+
+        graph.draw(table, options);
+
+        return graph;
+      }
+
+      var init = function init ( ) {
+        // setting up the dashboard
+        var slider = {
+          users: new Slider('s-users', { min: 0, max: 10000, value: 3600, step: 100, title: 'Users: $value' }),
+          reportLocation: new Slider('s-report-location', { min: 0, max: 100, value: 36, title: 'Report Location: $value times per hour per user' }),
+          refresh: new Slider('s-refresh', { min: 1, max: 30, value: 2, title: 'Data Update Period: $value seconds' })
+        }
+
+        // installing the gauges
+        var locRepLGauge = drawLatencyGauge('l-g-report-location', 'Rep Loc');
+        var getPopLGauge = drawLatencyGauge('l-g-get-popular', 'Get Pop');
+
+        // plotting graphs
+        var latencyGraph = drawLatencyGraph('lc-latencies');
+
+        // start pulling data
+        var report = function report ( stats ) {
+          var reploc = stats.latency.reportLocation;
+          var getpop = stats.latency.getPopular;
+
+          drawLatencyGauge(locRepLGauge, 'Rep Loc', reploc && reploc.min, reploc && reploc.max, reploc && reploc.average);
+          drawLatencyGauge(getPopLGauge, 'Get Pop', getpop && getpop.min, getpop && getpop.max, getpop && getpop.average);
+
+          drawLatencyGraph(latencyGraph, stats.latencies, stats.origin);
+
+          setTimeout(update, slider.refresh.value * 1000);
+        }
+
+        var update = function update ( ) {
+          var request = new window.XMLHttpRequest();
+
+          request.onreadystatechange = function newState ( ) {
+            if ( request.readyState == 4 && request.status == 200) {
+              report(new Function ( 'return ' + request.responseText ) ( ));
+            }
+          }
+
+          request.open('GET', '/statistics');
+          request.send();
+        }
+
+        update();
+      }
+
+      google.load("visualization", "1", {packages:["corechart", "gauge", "controls"]});
+
+      google.setOnLoadCallback(init);
+
+      //setTimeout(function reload ( ) { document.location.reload(true); }, 60000);
+    </script>
+  </head>
+  <body style="text-align: center">
+    <h1>$TITLE</h1>
+    <div id="dashboard">
+      <div id="sliders" style="display: inline-block; vertical-align: middle; text-align: left; width: 25%">
+        <div id="s-users"></div>
+        <div id="s-report-location"></div>
+        <div id="s-refresh"></div>
+      </div>
+      <div id="latencies" style="display: inline-block; vertical-align: middle; text-align: right; width: 70%">
+        <div id="l-g-report-location" style="display: inline-block"></div>
+        <div id="l-g-get-popular" style="display: inline-block"></div>
+      </div>
+    </div>
+    <div id="lc-latencies" style="height: 500px;"></div>
+  </body>
+</html>

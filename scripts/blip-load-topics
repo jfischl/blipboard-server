@@ -1,0 +1,16 @@
+#!/usr/bin/env node
+
+var fs = require('fs');
+var d = JSON.parse(fs.readFileSync(__dirname + '/../data/topics.json', 'ascii'));
+var t = require('../managers/topicManager');
+var js = require('../lib/javascript');
+var mongo = require('../lib/mongo');
+var categories = require('../data/categories');
+
+mongo.initialize(function() { 
+  t.loadDefinitions(d, function() { 
+    categories.loadTopicIds(function() { 
+      process.exit(0); 
+    });
+  });   
+});

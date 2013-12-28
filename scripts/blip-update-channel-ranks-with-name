@@ -1,0 +1,23 @@
+#!/usr/bin/env node
+
+var async = require('async');
+var db = require('mongoskin').db(process.env.MONGOHQ_URL);
+
+console.log( 'Retreiving ranks' );
+
+db.collection('ChannelRank').find().toArray(function ( error, ranks ) {
+  if ( error ) { console.log( error ); db.close(); }
+
+  if ( ranks ) {
+    async.forEach(ranks, function ( rank, callback ) {
+        db.collection('Channel').findOne({ _id: rank.channel }, function onFoundChannel ( error, channel ) {
+          if ( channel ) db.collection('ChannelRank').update(rank, { $set: { name: channel.name } }, { safe: true }, callback);
+          else callback();
+        });
+      }, function ( error ) {
+        console.log( error || 'success!' );
+  
+        db.close();
+    });
+  }
+});

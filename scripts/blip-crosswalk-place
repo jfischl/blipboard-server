@@ -1,0 +1,101 @@
+#!/usr/bin/env node
+
+var async = require('async');
+var js = require('../lib/javascript');
+var config = require('../config');
+var mongo = require('../lib/mongo');
+var factual = require('../lib/factual');
+
+//db.Channel.find({type: 'place', factual: {$exists: false}, blacklisted: {$ne: true}}, {_id: 0, name: 1, 'facebook.id':1, 'facebook.checkins':1, 'facebook.likes':1}).sort({'facebook.checkins': -1, 'facebook.likes':-1})
+
+var count = 1;
+if (process.argv[2]) { 
+  count = process.argv[2];
+}
+console.log ("Processing " + count + " channels");
+
+function processChannel(channel, callback) {
+  if (channel) { 
+    factual.lookupId("facebook", channel.facebook.id, function (error, factual_id) {
+      if (error) { 
+        callback(error);
+      }
+      else if (factual_id) { 
+        factual.lookupCrosswalk(factual_id, function(error, crosswalk) {
+          //console.log(resolved.factual_id + " -> " + js.pp(crosswalk));
+          if (error) { 
+            console.log("error1: " + js.pp(error));
+            callback(error); 
+          }
+          else { 
+            if (!crosswalk) crosswalk = "unresolved";
+            mongo.channels.update({_id:channel._id}, 
+                                  {$set: {'factual': crosswalk}}, 
+                                  function() {});
+            callback();
+          }
+        });
+      }
+      else {
+        factual.search(channel, function(resolved) { 
+          if (resolved) { 
+            factual.lookupCrosswalk(resolved.factual_id, function(error, crosswalk) {
+              if (error) { 
+                callback(error); 
+              }
+              else {
+                if (!crosswalk) crosswalk = "unresolved";
+                mongo.channels.update({_id:channel._id}, 
+                                      {$set: {'factual': crosswalk}}, 
+                                      function() {});
+                callback();
+              }
+            });
+          }
+          else {
+            mongo.channels.update({_id:channel._id}, 
+                                  {$set: {'factual': 'unresolved'}}, 
+                                  function() {});
+            callback();
+          }
+        });
+      }
+    });
+  }
+}
+
+function processChannels(error, channels) {
+  async.forEachLimit(channels, 5, processChannel, function (err) {
+    console.log("finished " + channels.length + " channels");
+    process.exit();
+  });
+}
+
+mongo.initialize(function() { 
+  mongo.channels.find({type: config.MONGO.channelType.place, 
+                       factual: {$exists: false},
+                       blacklisted: {$ne: true},
+                       'location.city': 'San Francisco'},
+                      {fields:['_id', 'name', 'facebook.id', 'location', 'phone', 'website'], limit: count})
+    .sort({'facebook.checkins':-1, 'facebook.likes':-1})
+    .toArray(processChannels);
+});
+
+  //   factual.lookupId("facebook", channel.facebook.id, function(error, factualId) { 
+  //     if (factualId) { 
+  //       factual.lookupCrosswalk(factualId, function (error, entries) { 
+  //         factual.filterCrosswalkEntries(entries, factual.defaultCrosswalkFilter, function(filtered) { 
+  //           console.log (channel.name + " -> "  + js.pp(filtered));
+  //         }); 
+  //       });
+  //     }
+  //     else {
+  //       console.log (channel.name + "(" + channel.facebook.id + ") -> not found");
+  //     }
+  //   });
+  // }
+  // });
+//});
+
+
+  
